@@ -19,15 +19,15 @@ int main()
 
 	left_Pyr = bulid_Gaussian_Pyr(input, left_Pyr,3);
 	
-	imshow("¸ßË¹½ğ×ÖËşµÚ0²ã", left_Pyr.at(0));
-    imshow("¸ßË¹½ğ×ÖËşµÚ1²ã", left_Pyr.at(1));
-	imshow("¸ßË¹½ğ×ÖËşµÚ2²ã", left_Pyr.at(2));
-	imshow("¸ßË¹½ğ×ÖËşµÚ3²ã", left_Pyr.at(3));
+	imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬0å±‚", left_Pyr.at(0));
+        imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬1å±‚", left_Pyr.at(1));
+	imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬2å±‚", left_Pyr.at(2));
+	imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬3å±‚", left_Pyr.at(3));
 	
 	lp_Pyr = bulid_Laplacian_Pyr(left_Pyr, lp_Pyr, 3);
-	imshow("À­ÆÕÀ­Ë¹½ğ×ÖËşµÚ0²ã", lp_Pyr.at(0));
-	imshow("À­ÆÕÀ­Ë¹½ğ×ÖËşµÚ1²ã", lp_Pyr.at(1));
-	imshow("À­ÆÕÀ­Ë¹½ğ×ÖËşµÚ2²ã", lp_Pyr.at(2));
+	imshow("æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”ç¬¬0å±‚", lp_Pyr.at(0));
+	imshow("æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”ç¬¬1å±‚", lp_Pyr.at(1));
+	imshow("æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”ç¬¬2å±‚", lp_Pyr.at(2));
 
 
 	waitKey();
@@ -36,14 +36,14 @@ int main()
 
 }
 
-//-------------------Function 1 ¸ßË¹½ğ×ÖËşµÄ¹¹½¨------------------------//
+//-------------------Function 1 é«˜æ–¯é‡‘å­—å¡”çš„æ„å»º------------------------//
 vector<Mat> bulid_Gaussian_Pyr(Mat& input, vector<Mat> Img_pyr, int level)
 {
 	/*
-	²ÎÊıËµÃ÷:
-	²ÎÊı1: ÊäÈëµÄ Mat ÀàĞÍ´ıÇó¸ßË¹½ğ×ÖËşÍ¼Ïñ
-	²ÎÊı2: Êä³öµÄ¸ßË¹½ğ×ÖËş(ÒÔ vector<Mat> ÀàĞÍ±£´æ, ¿ÉÊ¹ÓÃ.at()»ñÈ¡Ä³Ò»²ãµÄÄÚÈİ)
-	²ÎÊı3: ¸ßË¹½ğ×ÖËşµÄ¼¶Êı( ´Ë´¦Ó¦ÌØ±ğ×¢Òâ:ÕæÊµµÄ²ãÊıÊÇ level + 1 !)
+	å‚æ•°è¯´æ˜:
+	å‚æ•°1: è¾“å…¥çš„ Mat ç±»å‹å¾…æ±‚é«˜æ–¯é‡‘å­—å¡”å›¾åƒ
+	å‚æ•°2: è¾“å‡ºçš„é«˜æ–¯é‡‘å­—å¡”(ä»¥ vector<Mat> ç±»å‹ä¿å­˜, å¯ä½¿ç”¨.at()è·å–æŸä¸€å±‚çš„å†…å®¹)
+	å‚æ•°3: é«˜æ–¯é‡‘å­—å¡”çš„çº§æ•°( æ­¤å¤„åº”ç‰¹åˆ«æ³¨æ„:çœŸå®çš„å±‚æ•°æ˜¯ level + 1 !)
 	*/
 	Img_pyr.push_back(input);
 	Mat dst;
@@ -56,37 +56,37 @@ vector<Mat> bulid_Gaussian_Pyr(Mat& input, vector<Mat> Img_pyr, int level)
 	return Img_pyr;
 }
 
-//---------------------------------Function 2 À­ÆÕÀ­Ë¹½ğ×ÖËşµÄ¹¹½¨---------------------------------------------------------//
+//---------------------------------Function 2 æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„æ„å»º---------------------------------------------------------//
 vector<Mat> bulid_Laplacian_Pyr(vector<Mat> Img_Gaussian_pyr, vector<Mat> Img_Laplacian_pyr, int level)
 {
 	/*
-	²ÎÊıËµÃ÷:
-	²ÎÊı1: ÊäÈëµÄ¸ßË¹½ğ×ÖËş vector<Mat> ÀàĞÍ£¬Ã¿Ò»¸öÔªËØ´ú±íÃ¿Ò»²ã
-	²ÎÊı2: ´ıÇó½âµÄÀ­ÆÕÀ­Ë¹½ğ×ÖËş
-	²ÎÊı3: À­ÆÕÀ­Ë¹½ğ×ÖËşµÄ²ãÊı level
+	å‚æ•°è¯´æ˜:
+	å‚æ•°1: è¾“å…¥çš„é«˜æ–¯é‡‘å­—å¡” vector<Mat> ç±»å‹ï¼Œæ¯ä¸€ä¸ªå…ƒç´ ä»£è¡¨æ¯ä¸€å±‚
+	å‚æ•°2: å¾…æ±‚è§£çš„æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”
+	å‚æ•°3: æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„å±‚æ•° level
 	*/
 	vector<Mat> Img_Gaussian_pyr_temp;
-	Img_Gaussian_pyr_temp.assign(Img_Gaussian_pyr.begin(), Img_Gaussian_pyr.end());   //ÓÉÓÚvector¶ÔÏó²»ÄÜÊ¹ÓÃ=¿½±´£¬´Ë´¦Ê¹ÓÃassign½øĞĞ¸´ÖÆ
+	Img_Gaussian_pyr_temp.assign(Img_Gaussian_pyr.begin(), Img_Gaussian_pyr.end());   //ç”±äºvectorå¯¹è±¡ä¸èƒ½ä½¿ç”¨=æ‹·è´ï¼Œæ­¤å¤„ä½¿ç”¨assignè¿›è¡Œå¤åˆ¶
 	
 	Mat for_sub, for_up;                  
 	for(int i = 0; i < level; i++)
 	{
-		Mat for_up = Img_Gaussian_pyr_temp.back();       //»ñÈ¡¸ßË¹½ğ×ÖËşµ±Ç°×î¸ß²ãµÄÍ¼ÏñµÄÒıÓÃ
-		Img_Gaussian_pyr_temp.pop_back();                //É¾³ı×îºóÒ»¸öÔªËØ
+		Mat for_up = Img_Gaussian_pyr_temp.back();       //è·å–é«˜æ–¯é‡‘å­—å¡”å½“å‰æœ€é«˜å±‚çš„å›¾åƒçš„å¼•ç”¨
+		Img_Gaussian_pyr_temp.pop_back();                //åˆ é™¤æœ€åä¸€ä¸ªå…ƒç´ 
 		
-		for_sub = Img_Gaussian_pyr_temp.back();          //»ñÈ¡±»¼õÊıÍ¼Ïñ
+		for_sub = Img_Gaussian_pyr_temp.back();          //è·å–è¢«å‡æ•°å›¾åƒ
 
 		Mat up2;
-		pyrUp(for_up, up2, Size(for_up.cols * 2, for_up.rows * 2));    //ÉÏ²ÉÑù
+		pyrUp(for_up, up2, Size(for_up.cols * 2, for_up.rows * 2));    //ä¸Šé‡‡æ ·
 
 		Mat lp;
 		/*
-		cout<<"³ß´ç1"<<for_sub.size();
-		cout<<"c³ß´ç2"<<up2.size();
+		cout<<"å°ºå¯¸1"<<for_sub.size();
+		cout<<"cå°ºå¯¸2"<<up2.size();
 		*/
 		lp = for_sub - up2;
 		Img_Laplacian_pyr.push_back(lp);
 	}
-	reverse(Img_Laplacian_pyr.begin(),Img_Laplacian_pyr.end());       //×öÒ»ÏÂ·´×ª
+	reverse(Img_Laplacian_pyr.begin(),Img_Laplacian_pyr.end());       //åšä¸€ä¸‹åè½¬
 	return Img_Laplacian_pyr;
 }
