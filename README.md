@@ -1,8 +1,8 @@
 # Image-processing-based-on-OpenCV
 
 ## Project Leader
-ZiHao Zhou  School of Information Engineering, South China University of Technology, Guangzhou, Guangdong, China 
-
+ZiHao Zhou:  School of Information Engineering, South China University of Technology, Guangzhou, Guangdong, China 
+             
 JunHua Chen
 
 Chen Yang
