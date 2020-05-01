@@ -2,8 +2,11 @@
 
 ## Project Leader
 ZiHao Zhou  School of Information Engineering, South China University of Technology, Guangzhou, Guangdong, China 
+
 JunHua Chen
+
 Chen Yang
+
 
 ## Research Focus
 This code repository contains image processing related codes based on OpenCV (C++)
