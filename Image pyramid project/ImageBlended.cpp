@@ -1,3 +1,8 @@
+//----------------------------åŸºäºæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„å›¾åƒèåˆç®—æ³•---------------------------//
+//Configuration: Visual Studio 2010 + Opencv2.4.10
+//Author: ZiHao Zhou / South China University of Technology 
+//Date: 2020.5.2
+
 #include <opencv2/opencv.hpp>
 #include<vector>
 #include<iostream>
@@ -19,91 +24,92 @@ int main()
 	Mat input = imread("4.jpg", 1);
 	Mat input2 = imread("test11.jpg", 1);
 
-	resize(input,input,Size(400, 400));
+	imshow("å¾…èåˆå›¾åƒ1", input);
+	imshow("å¾…èåˆå›¾åƒ2", input2);
+
+	resize(input,input,Size(600, 600));
 	
 	int height = input.rows;
 	int width = input.cols;
-	cout<<"width"<<width<<endl;
-	cout<<"height"<<height<<endl;
+	//cout<<"width"<<width<<endl;
+	//cout<<"height"<<height<<endl;
 
-	resize(input2, input2, Size(400,400));
+	resize(input2, input2, Size(600,600));
 
-	Gau_Pyr = bulid_Gaussian_Pyr(input, Gau_Pyr,3);
+	input.convertTo(input, CV_32F);                  //è½¬æ¢æˆCV_32F, ç”¨äºå’Œmaskçš„ç±»å‹åŒ¹é…( å¦å¤– CV_32F ç±»å‹ç²¾åº¦é«˜, æœ‰åˆ©äºè®¡ç®—)
+	input2.convertTo(input2, CV_32F);
+
+	Gau_Pyr = bulid_Gaussian_Pyr(input, Gau_Pyr,3);       //è®¡ç®—ä¸¤å¼ å›¾ç‰‡çš„é«˜æ–¯é‡‘å­—å¡”
 	Gau_Pyr2 = bulid_Gaussian_Pyr(input2, Gau_Pyr2,3);
 	
 	/*
-	imshow("¸ßË¹½ğ×ÖËşµÚ0²ã", Gau_Pyr.at(0));
-    imshow("¸ßË¹½ğ×ÖËşµÚ1²ã", Gau_Pyr.at(1));
-	imshow("¸ßË¹½ğ×ÖËşµÚ2²ã", Gau_Pyr.at(2));
-	imshow("¸ßË¹½ğ×ÖËşµÚ3²ã", Gau_Pyr.at(3));
+	imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬0å±‚", Gau_Pyr.at(0));
+        imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬1å±‚", Gau_Pyr.at(1));
+	imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬2å±‚", Gau_Pyr.at(2));
+	imshow("é«˜æ–¯é‡‘å­—å¡”ç¬¬3å±‚", Gau_Pyr.at(3));
 	*/
-	lp_Pyr = bulid_Laplacian_Pyr(Gau_Pyr, lp_Pyr, 3);
+	lp_Pyr = bulid_Laplacian_Pyr(Gau_Pyr, lp_Pyr, 3);     //è®¡ç®—ä¸¤è€…å›¾åƒçš„æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”
 	lp_Pyr2 = bulid_Laplacian_Pyr(Gau_Pyr2, lp_Pyr2, 3);
 	
-	//imshow("À­ÆÕÀ­Ë¹½ğ×ÖËşµÚ0²ã", lp_Pyr[0]);
-	
 	/*
-	imshow("À­ÆÕÀ­Ë¹½ğ×ÖËşµÚ1²ã", lp_Pyr.at(1));
-	imshow("À­ÆÕÀ­Ë¹½ğ×ÖËşµÚ2²ã", lp_Pyr.at(2));
-
-*/
-
-
-	
-	Mat mask = Mat::zeros(height, width, CV_8UC3);     //¹¹ÔìÑÚÄ¤mask
-	mask(Range::all(), Range(0, mask.cols * 0.5)) = 1.0;   //maskµÄËùÓĞĞĞ,È»ºó×ó°ë²¿·ÖÊÇ1,ÓÒ°ë²¿·ÖÊÇ0
+	imshow("æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”ç¬¬0å±‚", lp_Pyr.at(0));    //å½“ç„¶,ä½¿ç”¨blend_lp[0]ä¹Ÿæ˜¯å¯ä»¥çš„
+	imshow("æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”ç¬¬1å±‚", lp_Pyr.at(1));
+	imshow("æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”ç¬¬2å±‚", lp_Pyr.at(2));
+        */
 
 	
+	Mat mask = Mat::zeros(height, width, CV_32FC1);           //æ„é€ æ©è†œmask, CV_32FC1ç±»å‹, å¤§å°å’Œ Img1 ä¸€æ ·
+	mask(Range::all(), Range(0, mask.cols * 0.5)) = 1.0;      //maskçš„æ‰€æœ‰è¡Œ,ç„¶åå·¦åŠéƒ¨åˆ†æ˜¯1,å³åŠéƒ¨åˆ†æ˜¯0 (æ„æ€æ˜¯å¯¹åŠèåˆ)
+
+	cvtColor(mask, mask, CV_GRAY2BGR);                        //å› ä¸ºæ­¤æ—¶maskæ˜¯å•channelçš„,Imgæ˜¯3channelçš„,æ‰€ä»¥è¿˜éœ€è¦cvtColor
+
+	//cout<<"ç°åœ¨maskçš„type"<<mask.type()<<endl;
+	//cout<<"ç°åœ¨çš„lpçš„type"<<lp_Pyr.at(0).type()<<endl;
+
 	vector<Mat> mask_Pyr, blend_lp;
 
-	Mat result_higest_level;
+	Mat result_higest_level;                                  //å›¾åƒèåˆçš„èµ·ç‚¹
 	
-
-	mask_Pyr = bulid_Gaussian_Pyr(mask, mask_Pyr, 3);
-	/*
-	cout<<"lp1µÄÀàĞÍ"<<lp_Pyr.back().type()<<endl;
-	cout<<"maskµÄÀàĞÍ"<<(Scalar(1.0, 1.0, 1.0) - mask_Pyr.back()).type()<<endl;
-	*/
+	mask_Pyr = bulid_Gaussian_Pyr(mask, mask_Pyr, 3);         //maskçš„é«˜æ–¯é‡‘å­—å¡”ä¹Ÿæ˜¯ level+1 å±‚çš„
 	
-	cout<<"1´óĞ¡"<<Gau_Pyr.back().size()<<endl;
-	cout<<"2´óĞ¡"<<Gau_Pyr2.back().size()<<endl;
-	waitKey();
+	//ä¸‹é¢å°† Img1, Img2çš„é«˜æ–¯é‡‘å­—å¡”çš„é¡¶å±‚æŒ‰ç…§maskèåˆ
 	result_higest_level = Gau_Pyr.back().mul(mask_Pyr.back()) + ((Gau_Pyr2.back()).mul(Scalar(1.0, 1.0, 1.0) - mask_Pyr.back()));
 	
 	/*
-	imshow("mask¸ßË¹½ğ×ÖËşµÄµÚ0²ã", mask_Pyr.at(0));
-	imshow("mask¸ßË¹½ğ×ÖËşµÄµÚ1²ã", mask_Pyr.at(1));
-	imshow("mask¸ßË¹½ğ×ÖËşµÄµÚ2²ã", mask_Pyr.at(2));
-	imshow("mask¸ßË¹½ğ×ÖËşµÄµÚ3²ã", mask_Pyr.at(3));
+	imshow("maské«˜æ–¯é‡‘å­—å¡”çš„ç¬¬0å±‚", mask_Pyr.at(0));
+	imshow("maské«˜æ–¯é‡‘å­—å¡”çš„ç¬¬1å±‚", mask_Pyr.at(1));
+	imshow("maské«˜æ–¯é‡‘å­—å¡”çš„ç¬¬2å±‚", mask_Pyr.at(2));
+	imshow("maské«˜æ–¯é‡‘å­—å¡”çš„ç¬¬3å±‚", mask_Pyr.at(3));
 	*/
-	waitKey();
 
 	blend_lp = blend_Laplacian_Pyr(lp_Pyr, lp_Pyr2, mask_Pyr, blend_lp);
 
-	imshow("ÈÚºÏÀ­ÆÕÀ­Ë¹½ğ×ÖËşµÄµÚ0²ã", blend_lp.at(0));
-	imshow("ÈÚºÏÀ­ÆÕÀ­Ë¹½ğ×ÖËşµÄµÚ1²ã", blend_lp.at(1));
-	imshow("ÈÚºÏÀ­ÆÕÀ­Ë¹½ğ×ÖËşµÄµÚ2²ã", blend_lp.at(2));
-	imshow("Í¼ÏñÈÚºÏµÄÆğµã", result_higest_level);
+	/*
+	imshow("èåˆæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„ç¬¬0å±‚", blend_lp.at(0));
+	imshow("èåˆæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„ç¬¬1å±‚", blend_lp.at(1));
+	imshow("èåˆæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„ç¬¬2å±‚", blend_lp.at(2));
+	*/
+	imshow("å›¾åƒèåˆçš„èµ·ç‚¹", result_higest_level);
 
 	Mat output;
 	output = blend(result_higest_level, blend_lp);
-	imshow("ÈÚºÏĞ§¹ûÍ¼", output);
+	output.convertTo(output, CV_8UC3);
+	imshow("èåˆæ•ˆæœå›¾", output);
 
 	waitKey();
 	return 0;
-
-
 }
 
-//-------------------Function 1 ¸ßË¹½ğ×ÖËşµÄ¹¹½¨------------------------//
+//-------------------Function 1 é«˜æ–¯é‡‘å­—å¡”çš„æ„å»º------------------------//
 vector<Mat> bulid_Gaussian_Pyr(Mat& input, vector<Mat> Img_pyr, int level)
 {
 	/*
-	²ÎÊıËµÃ÷:
-	²ÎÊı1: ÊäÈëµÄ Mat ÀàĞÍ´ıÇó¸ßË¹½ğ×ÖËşÍ¼Ïñ
-	²ÎÊı2: Êä³öµÄ¸ßË¹½ğ×ÖËş(ÒÔ vector<Mat> ÀàĞÍ±£´æ, ¿ÉÊ¹ÓÃ.at()»ñÈ¡Ä³Ò»²ãµÄÄÚÈİ)
-	²ÎÊı3: ¸ßË¹½ğ×ÖËşµÄ¼¶Êı( ´Ë´¦Ó¦ÌØ±ğ×¢Òâ:ÕæÊµµÄ²ãÊıÊÇ level + 1 !)
+	å‚æ•°è¯´æ˜:
+	å‚æ•°1: è¾“å…¥çš„ Mat ç±»å‹å¾…æ±‚é«˜æ–¯é‡‘å­—å¡”å›¾åƒ
+	å‚æ•°2: è¾“å‡ºçš„é«˜æ–¯é‡‘å­—å¡”(ä»¥ vector<Mat> ç±»å‹ä¿å­˜, å¯ä½¿ç”¨.at()è·å–æŸä¸€å±‚çš„å†…å®¹)
+	å‚æ•°3: é«˜æ–¯é‡‘å­—å¡”çš„çº§æ•°( æ­¤å¤„åº”ç‰¹åˆ«æ³¨æ„:çœŸå®çš„å±‚æ•°æ˜¯ level + 1 !)
 	*/
+	
 	Img_pyr.push_back(input);
 	Mat dst;
 	for(int i = 0; i < level; i++)
@@ -115,80 +121,83 @@ vector<Mat> bulid_Gaussian_Pyr(Mat& input, vector<Mat> Img_pyr, int level)
 	return Img_pyr;
 }
 
-//---------------------------------Function 2 À­ÆÕÀ­Ë¹½ğ×ÖËşµÄ¹¹½¨---------------------------------------------------------//
+//---------------------------------Function 2 æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„æ„å»º---------------------------------------------------------//
 vector<Mat> bulid_Laplacian_Pyr(vector<Mat> Img_Gaussian_pyr, vector<Mat> Img_Laplacian_pyr, int level)
 {
 	/*
-	²ÎÊıËµÃ÷:
-	²ÎÊı1: ÊäÈëµÄ¸ßË¹½ğ×ÖËş vector<Mat> ÀàĞÍ£¬Ã¿Ò»¸öÔªËØ´ú±íÃ¿Ò»²ã
-	²ÎÊı2: ´ıÇó½âµÄÀ­ÆÕÀ­Ë¹½ğ×ÖËş
-	²ÎÊı3: À­ÆÕÀ­Ë¹½ğ×ÖËşµÄ²ãÊı level
+	å‚æ•°è¯´æ˜:
+	å‚æ•°1: è¾“å…¥çš„é«˜æ–¯é‡‘å­—å¡” vector<Mat> ç±»å‹ï¼Œæ¯ä¸€ä¸ªå…ƒç´ ä»£è¡¨æ¯ä¸€å±‚
+	å‚æ•°2: å¾…æ±‚è§£çš„æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”
+	å‚æ•°3: æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„å±‚æ•° level
 	*/
+	
 	vector<Mat> Img_Gaussian_pyr_temp;
-	Img_Gaussian_pyr_temp.assign(Img_Gaussian_pyr.begin(), Img_Gaussian_pyr.end());   //ÓÉÓÚvector¶ÔÏó²»ÄÜÊ¹ÓÃ=¿½±´£¬´Ë´¦Ê¹ÓÃassign½øĞĞ¸´ÖÆ
+	Img_Gaussian_pyr_temp.assign(Img_Gaussian_pyr.begin(), Img_Gaussian_pyr.end());   //ç”±äºvectorå¯¹è±¡ä¸èƒ½ä½¿ç”¨=æ‹·è´ï¼Œæ­¤å¤„ä½¿ç”¨assignè¿›è¡Œå¤åˆ¶
 	
 	Mat for_sub, for_up;                  
 	for(int i = 0; i < level; i++)
 	{
-		Mat for_up = Img_Gaussian_pyr_temp.back();       //»ñÈ¡¸ßË¹½ğ×ÖËşµ±Ç°×î¸ß²ãµÄÍ¼ÏñµÄÒıÓÃ
-		Img_Gaussian_pyr_temp.pop_back();                //É¾³ı×îºóÒ»¸öÔªËØ
+		Mat for_up = Img_Gaussian_pyr_temp.back();       //è·å–é«˜æ–¯é‡‘å­—å¡”å½“å‰æœ€é«˜å±‚çš„å›¾åƒçš„å¼•ç”¨
+		Img_Gaussian_pyr_temp.pop_back();                //åˆ é™¤æœ€åä¸€ä¸ªå…ƒç´ 
 		
-		for_sub = Img_Gaussian_pyr_temp.back();          //»ñÈ¡±»¼õÊıÍ¼Ïñ
+		for_sub = Img_Gaussian_pyr_temp.back();          //è·å–è¢«å‡æ•°å›¾åƒ
 
 		Mat up2;
-		pyrUp(for_up, up2, Size(for_up.cols * 2, for_up.rows * 2));    //ÉÏ²ÉÑù
+		pyrUp(for_up, up2, Size(for_up.cols * 2, for_up.rows * 2));    //ä¸Šé‡‡æ ·
 
 		Mat lp;
 		/*
-		cout<<"³ß´ç1"<<for_sub.size();
-		cout<<"c³ß´ç2"<<up2.size();
+		cout<<"å°ºå¯¸1"<<for_sub.size();
+		cout<<"cå°ºå¯¸2"<<up2.size();
 		*/
 		lp = for_sub - up2;
 		Img_Laplacian_pyr.push_back(lp);
 	}
-	reverse(Img_Laplacian_pyr.begin(),Img_Laplacian_pyr.end());       //×öÒ»ÏÂ·´×ª
+	reverse(Img_Laplacian_pyr.begin(),Img_Laplacian_pyr.end());       //åšä¸€ä¸‹åè½¬(0->æœ€å¤§å°ºå¯¸çš„é‡‘å­—å¡”å±‚)
 	return Img_Laplacian_pyr;
 }
 
+//------------------------------------Function 3 æ··åˆæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”çš„æ„å»º-----------------------------------------//
 vector<Mat> blend_Laplacian_Pyr(vector<Mat> Img1_lp, vector<Mat> Img2_lp,vector<Mat> mask_gau, vector<Mat> blend_lp)
 {
+	/*å‚æ•°è¯´æ˜:
+	å‚æ•°1: å¾…èåˆå›¾åƒ1çš„æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡” vector<Mat> ç±»å‹(level å±‚)
+	å‚æ•°2: å¾…èåˆå›¾åƒ2çš„æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡” vector<Mat> ç±»å‹
+	å‚æ•°3: maskæ©è†œçš„é«˜æ–¯é‡‘å­—å¡” (level+1å±‚)
+	å‚æ•°4: å¾…è¿”å›çš„æ··åˆæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡” vector<Mat> ç±»å‹
+	*/
+
 	int level = Img1_lp.size();
-	cout<<"level"<<level;   //3;
-	//blend_lp.push_back((Img1_lp.back()).mul(mask_gau.back()) +
-    //       (Img2_lp.back()).mul(Scalar(1.0, 1.0, 1.0) - mask_gau.back()));   //Ò»»á»¹ĞèÒª°ÑImg1, 2¸ßË¹½ğ×ÖËşµÄ¶¥²ã½øĞĞ°´ÕÕmaskÏà¼ÓµÄ²Ù×÷
-	for(int i = 0; i < level; i++)   //×¢Òâ 0 ±íÊ¾×î´óµÄÍ¼£¬ËµÃ÷ÊÇ´Óµ×¿ªÊ¼ÈÚºÏlp
+
+	//cout<<"level"<<level;  ç¡®è®¤levelçº§æ•° 
+
+	for(int i = 0; i < level; i++)                                        //æ³¨æ„ 0 è¡¨ç¤ºæœ€å¤§çš„å›¾ï¼Œè¯´æ˜æ˜¯ä»åº•å¼€å§‹èåˆlp
 	{  
-		//(Img1_lp.at(i)).convertTo(Img1_lp.at(i), CV_32FC1); 
-		//Mat Img1_lp_gray_temp;
-		//cvtColor(Img1_lp.at(i), Img1_lp_gray_temp, CV_BGR2GRAY);
-		//Mat A = Img1_lp_gray_temp.mul(mask_gau.at(i));
-		Mat A = (Img1_lp.at(i)).mul(mask_gau.at(i));
-		//imshow("Ô­À´µÄÀ­ÆÕÀ­Ë¹½ğ×ÖËşi²ãÍ¼", Img1_lp.at(i));
-		//imshow("A", A);
-		//waitKey();
-		/*
-		cout<<"1ÀàĞÍ"<<Img1_lp.at(i).type()<<endl;
-		cout<<"2ÀàĞÍ"<<mask_gau.at(i).type()<<endl;
-		waitKey();
-		*/
-		//cout<<"maskµÄ´óĞ¡"<<mask_gau[i].size();
+		Mat A = (Img1_lp.at(i)).mul(mask_gau.at(i));                      //æ ¹æ®mask(ä½œä¸ºæƒé‡) 
+		
 		Mat antiMask = Scalar(1.0, 1.0, 1.0) - mask_gau[i];
 		Mat B = Img2_lp[i].mul(antiMask);
-		Mat blendedLevel = A + B;
-		blend_lp.push_back(blendedLevel);
+		Mat blendedLevel = A + B;                                         //å¾…èåˆå›¾åƒçš„æ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡”å¯¹åº”å±‚æŒ‰ç…§maskèåˆ
+		blend_lp.push_back(blendedLevel);                                 //å­˜å…¥blend_lp, ä½œä¸ºç¬¬ i å±‚
 	}
 	return blend_lp;
 }
 
+//--------------Function 4 å›¾åƒèåˆ---------------------//
 Mat blend(Mat& result_higest_level, vector<Mat> blend_lp)
 {
-	int level = blend_lp.size();
+	/*å‚æ•°è¯´æ˜:
+	å‚æ•°1: å›¾åƒæ··åˆçš„èµ·ç‚¹Mat (ä¹Ÿå°±æ˜¯ä¸¤ä¸ªå¸¦èåˆå›¾åƒé«˜æ–¯é‡‘å­—å¡”æœ€é«˜å±‚æŒ‰maskåŠ æƒæ±‚å’Œçš„ç»“æœ
+	å‚æ•°2: Function 3æ‰€æ±‚å¾—çš„æ··åˆæ‹‰æ™®æ‹‰æ–¯é‡‘å­—å¡” vector<Mat> ç±»å‹
+	*/
+
+	int level = blend_lp.size();      
 	Mat for_up, temp_add;
 	for(int i = 0; i < level; i++)
 	{	
 		pyrUp(result_higest_level, for_up, Size(result_higest_level.cols * 2, result_higest_level.rows * 2));
 		temp_add = blend_lp.back() + for_up;
-		blend_lp.pop_back();
+		blend_lp.pop_back();              //å› ä¸ºæ­¤å¤„æ˜¯ç›´æ¥åˆ é™¤æœ€åä¸€ä¸ªå…ƒç´ ,æ‰€ä»¥åœ¨è°ƒç”¨æœ¬å‡½æ•°ä¹‹å‰å¦‚åç»­çš„ä»£ç è¿˜éœ€è¦blend_lp, éœ€è¦å…ˆè¡Œä¿å­˜æ‹·è´
 		result_higest_level = temp_add;
 	}
 	return temp_add;
