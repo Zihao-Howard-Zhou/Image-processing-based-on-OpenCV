@@ -20,4 +20,3 @@ At the same time, we will also study the underwater image processing based on de
 How to get higher quality underwater image in the improved algorithm is our ultimate research goal.
 
 
-
