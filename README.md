@@ -20,5 +20,4 @@ At the same time, we will also study the underwater image processing based on de
 How to get higher quality underwater image in the improved algorithm is our ultimate research goal.
 
 
-![Image text](https://github.com/ZZH0/Image-processing-based-on-OpenCV/blob/master/Dark%20Channel%20Prior/test1.jpg)
 
