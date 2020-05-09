@@ -17,7 +17,7 @@ Mat MSR(Mat& input, Mat& dst);
 int main()
 {
 	Mat scr = imread("test2.jpg", 1);
-	imshow("Ô­Í¼", scr);
+	imshow("åŸå›¾", scr);
 
 	Mat dst;
 	dst = MSR(scr, dst);
@@ -29,37 +29,37 @@ int main()
 //-------------------Function 1: Multi-Scale Retinex-------------------//
 Mat MSR(Mat& input, Mat& dst)
 {
-	/*º¯ÊıËµÃ÷:
-	»ù±¾MSR²½Öè:
-	1. ½«Ô­Í¼×ª»»µ½¶ÔÊı¿Õ¼ä£¬µÃµ½Log[S(x,y)]
-	2. ½«Ô­Í¼°´ÕÕÈı¸ö²»Í¬µÄ³ß¶È×öGaussian filter£¬ÔÙ×ª¶ÔÊıÓò£¬·Ö±ğµÃµ½: Log[L_i(x,y)]
-	3. ¼ÆËã w_i(Log[S(x,y)] - Log[L_i(x,y)])£¬½«Èı¸öÏîÏà¼Ó£¬µÃµ½Log[R(x,y)]
-	4. ÓÉÓÚ´ËÊ±µÄ Log[R(x,y)] µÄÖµ²¢²»ÔÚ0-255·¶Î§ÄÚ£¬ËùÒÔĞèÒª½øĞĞÏßĞÔÀ­Éì
-	5. ×îºó×ª»»¸ñÊ½£¬µÃµ½ r(x,y) Êä³ö
-	*/
+    /*å‡½æ•°è¯´æ˜:
+    åŸºæœ¬MSRæ­¥éª¤:
+    1. å°†åŸå›¾è½¬æ¢åˆ°å¯¹æ•°ç©ºé—´ï¼Œå¾—åˆ°Log[S(x,y)]
+    2. å°†åŸå›¾æŒ‰ç…§ä¸‰ä¸ªä¸åŒçš„å°ºåº¦åšGaussian filterï¼Œå†è½¬å¯¹æ•°åŸŸï¼Œåˆ†åˆ«å¾—åˆ°: Log[L_i(x,y)]
+    3. è®¡ç®— w_i(Log[S(x,y)] - Log[L_i(x,y)])ï¼Œå°†ä¸‰ä¸ªé¡¹ç›¸åŠ ï¼Œå¾—åˆ°Log[R(x,y)]
+    4. ç”±äºæ­¤æ—¶çš„ Log[R(x,y)] çš„å€¼å¹¶ä¸åœ¨0-255èŒƒå›´å†…ï¼Œæ‰€ä»¥éœ€è¦è¿›è¡Œçº¿æ€§æ‹‰ä¼¸
+    5. æœ€åè½¬æ¢æ ¼å¼ï¼Œå¾—åˆ° r(x,y) è¾“å‡º
+    */
 
-	int gain = 128;
+    int gain = 128;
     int offset = 128;
-	Mat input_f, input_log, Li_log;           //×÷ÎªLog[S(x,y)]
+    Mat input_f, input_log, Li_log;           //ä½œä¸ºLog[S(x,y)]
 
-	vector<double> sigemas;
+    vector<double> sigemas;
 
-	sigemas.push_back(30);
-	sigemas.push_back(150);
-	sigemas.push_back(300);
+    sigemas.push_back(30);
+    sigemas.push_back(150);
+    sigemas.push_back(300);
 
-	//³õÊ¼»¯È¨ÖØ
-	vector<double> weights;
+    //åˆå§‹åŒ–æƒé‡
+    vector<double> weights;
 	for (int i = 0; i < 3; i++)
-    {
-       weights.push_back(1.f / 3);           //È¨ÖØÎª1/3
+	{
+	    weights.push_back(1.f / 3);           //æƒé‡ä¸º1/3
     }
 
 	input.convertTo(input_f, CV_32FC3);     
-	log(input_f, input_log);                 //µÃµ½¶ÔÊıÓòÏÂµÄ Log[S(x,y)]
+	log(input_f, input_log);                 //å¾—åˆ°å¯¹æ•°åŸŸä¸‹çš„ Log[S(x,y)]
 
 
-    //¸ù¾İ¸ø¶¨µÄÈ¨ÖØ¹éÒ»»¯
+    //æ ¹æ®ç»™å®šçš„æƒé‡å½’ä¸€åŒ–
     double weight = 0;
     size_t num = weights.size();
     for (size_t i = 0; i < num; i++)
@@ -73,50 +73,50 @@ Mat MSR(Mat& input, Mat& dst)
     }
 
 	
-	vector<Mat> log_term;                    //¶ÔÊıÏîÈİÆ÷
+	vector<Mat> log_term;                    //å¯¹æ•°é¡¹å®¹å™¨
 
 	for(size_t i = 0; i < num; i++)
 	{
 		Mat blur = input_f.clone();
-		gaussianFilter(blur, sigemas[i]);    //¾­¹ı¸ßË¹ÂË²¨Ö®ºóµÃµ½ L_i(x,y)
-		log(blur, Li_log);                   //Ïàµ±ÓÚlog[L_i(x,y)]
-		log_term.push_back(weights[i]*(input_log - Li_log));    //µÚÒ»´ÎÖ´ĞĞ¾ÍÊÇµÚ0Ïî£¬½«ÔÚÊı×éµÄµÚÒ»Î»  w_i(Log[S(x,y)] - log[L_i(x,y)])
+		gaussianFilter(blur, sigemas[i]);    //ç»è¿‡é«˜æ–¯æ»¤æ³¢ä¹‹åå¾—åˆ° L_i(x,y)
+		log(blur, Li_log);                   //ç›¸å½“äºlog[L_i(x,y)]
+		log_term.push_back(weights[i]*(input_log - Li_log));    //ç¬¬ä¸€æ¬¡æ‰§è¡Œå°±æ˜¯ç¬¬0é¡¹ï¼Œå°†åœ¨æ•°ç»„çš„ç¬¬ä¸€ä½  w_i(Log[S(x,y)] - log[L_i(x,y)])
 	}
 
 	Mat dst2;
 	dst = log_term[0] + log_term[1] + log_term[2];
 
 	
-	dst = (dst2 * gain) + offset;            //Ê±µÄdstÖµµÄ·¶Î§²¢²»ÊÇ0¨C255£¬ËùÒÔ»¹ĞèÒª½øĞĞÏßĞÔÀ­Éì²¢×ª»»³ÉÏàÓ¦µÄ¸ñÊ½Êä³öÏÔÊ¾
-	dst.convertTo(dst, CV_8UC3);             //×ª»»³ÉÕı³£ÓÃÓÚÏÔÊ¾µÄ8UC3¸ñÊ½
+	dst = (dst2 * gain) + offset;            //æ—¶çš„dstå€¼çš„èŒƒå›´å¹¶ä¸æ˜¯0â€“255ï¼Œæ‰€ä»¥è¿˜éœ€è¦è¿›è¡Œçº¿æ€§æ‹‰ä¼¸å¹¶è½¬æ¢æˆç›¸åº”çš„æ ¼å¼è¾“å‡ºæ˜¾ç¤º
+	dst.convertTo(dst, CV_8UC3);             //è½¬æ¢æˆæ­£å¸¸ç”¨äºæ˜¾ç¤ºçš„8UC3æ ¼å¼
 	return dst;
 }
 
-//-----------Function2: ¸ßË¹Ä£ºı---------------//
+//-----------Function2: é«˜æ–¯æ¨¡ç³Š---------------//
 void gaussianFilter(Mat &img, double sigma)
 {
-	/*º¯ÊıËµÃ÷:
-	Õâ¸öFunction ÊµÏÖµÄÊÇ¸ßË¹Ä£ºı, µ«ÊÇÖ÷ÒªµÄ´úÂë²¿·ÖÔÚÓÚ¼ÆËãkernel size
-	±¾º¯Êı¼ÆËã kernel size µÄ¹«Ê½ÊÇ: 6 * sigma +1                 £¨1£©
-	¹ØÓÚ¹«Ê½£¨1£©µÄ½âÊÍ: ¸ù¾İÕıÌ¬·Ö²¼µÄ 3¦Ò ×¼Ôò, µ±×Ô±äÁ¿³¬¹ı¡À3¦ÒµÄ·¶Î§Ö®ºó, ¸ßË¹º¯ÊıµÄ¸ÅÂÊÃÜ¶ÈÖµ¼¸ºõÎª0
-	Òò´Ë, ÓĞĞ§µÄ´°¿Ú´óĞ¡Ó¦Îª 6¦Ò, µ«ÓÉÓÚ GaussianBlur º¯ÊıÀïÃæÒªÇó kernel sizeÎªÆæÊı, Òò´Ë×öÁË+1´¦Àí
+	/*å‡½æ•°è¯´æ˜:
+	è¿™ä¸ªFunction å®ç°çš„æ˜¯é«˜æ–¯æ¨¡ç³Š, ä½†æ˜¯ä¸»è¦çš„ä»£ç éƒ¨åˆ†åœ¨äºè®¡ç®—kernel size
+	æœ¬å‡½æ•°è®¡ç®— kernel size çš„å…¬å¼æ˜¯: 6 * sigma +1                 ï¼ˆ1ï¼‰
+	å…³äºå…¬å¼ï¼ˆ1ï¼‰çš„è§£é‡Š: æ ¹æ®æ­£æ€åˆ†å¸ƒçš„ 3Ïƒ å‡†åˆ™, å½“è‡ªå˜é‡è¶…è¿‡Â±3Ïƒçš„èŒƒå›´ä¹‹å, é«˜æ–¯å‡½æ•°çš„æ¦‚ç‡å¯†åº¦å€¼å‡ ä¹ä¸º0
+	å› æ­¤, æœ‰æ•ˆçš„çª—å£å¤§å°åº”ä¸º 6Ïƒ, ä½†ç”±äº GaussianBlur å‡½æ•°é‡Œé¢è¦æ±‚ kernel sizeä¸ºå¥‡æ•°, å› æ­¤åšäº†+1å¤„ç†
 	*/
 
     int filter_size;
     
     if (sigma > 300)
     {
-        sigma = 300;                //²»ÄÜ´óÓÚ300£¬´óÓÚ300Ç¿ĞĞ¸Ä³É300
+        sigma = 300;                //ä¸èƒ½å¤§äº300ï¼Œå¤§äº300å¼ºè¡Œæ”¹æˆ300
     }
 
-    //»ñÈ¡ÂË²¨Æ÷µÄ´óĞ¡£¬×ªÎªÆæÊı
+    //è·å–æ»¤æ³¢å™¨çš„å¤§å°ï¼Œè½¬ä¸ºå¥‡æ•°
     filter_size = (int)floor(sigma * 6) +1;
 	
-    //Èç¹ûĞ¡ÓÚ3Ôò·µ»Ø
+    //å¦‚æœå°äº3åˆ™è¿”å›
     if (filter_size < 3)
     {
         return;
     }
 
-    GaussianBlur(img, img, Size(filter_size, filter_size), 0);    //½øĞĞ¸ßË¹Ä£ºı
+    GaussianBlur(img, img, Size(filter_size, filter_size), 0);    //è¿›è¡Œé«˜æ–¯æ¨¡ç³Š
 }
