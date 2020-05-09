@@ -50,13 +50,13 @@ Mat MSR(Mat& input, Mat& dst)
 
     //初始化权重
     vector<double> weights;
-	for (int i = 0; i < 3; i++)
-	{
-	    weights.push_back(1.f / 3);           //权重为1/3
+    for (int i = 0; i < 3; i++)
+    {
+        weights.push_back(1.f / 3);           //权重为1/3
     }
 
-	input.convertTo(input_f, CV_32FC3);     
-	log(input_f, input_log);                 //得到对数域下的 Log[S(x,y)]
+    input.convertTo(input_f, CV_32FC3);     
+    log(input_f, input_log);                 //得到对数域下的 Log[S(x,y)]
 
 
     //根据给定的权重归一化
@@ -73,34 +73,34 @@ Mat MSR(Mat& input, Mat& dst)
     }
 
 	
-	vector<Mat> log_term;                    //对数项容器
+    vector<Mat> log_term;                    //对数项容器
 
-	for(size_t i = 0; i < num; i++)
-	{
-		Mat blur = input_f.clone();
-		gaussianFilter(blur, sigemas[i]);    //经过高斯滤波之后得到 L_i(x,y)
-		log(blur, Li_log);                   //相当于log[L_i(x,y)]
-		log_term.push_back(weights[i]*(input_log - Li_log));    //第一次执行就是第0项，将在数组的第一位  w_i(Log[S(x,y)] - log[L_i(x,y)])
-	}
+    for(size_t i = 0; i < num; i++)
+    {
+	Mat blur = input_f.clone();
+	gaussianFilter(blur, sigemas[i]);    //经过高斯滤波之后得到 L_i(x,y)
+	log(blur, Li_log);                   //相当于log[L_i(x,y)]
+	log_term.push_back(weights[i]*(input_log - Li_log));    //第一次执行就是第0项，将在数组的第一位  w_i(Log[S(x,y)] - log[L_i(x,y)])
+    }
 
-	Mat dst2;
-	dst = log_term[0] + log_term[1] + log_term[2];
+    Mat dst2;
+    dst = log_term[0] + log_term[1] + log_term[2];
 
 	
-	dst = (dst2 * gain) + offset;            //时的dst值的范围并不是0–255，所以还需要进行线性拉伸并转换成相应的格式输出显示
-	dst.convertTo(dst, CV_8UC3);             //转换成正常用于显示的8UC3格式
-	return dst;
+    dst = (dst2 * gain) + offset;            //时的dst值的范围并不是0–255，所以还需要进行线性拉伸并转换成相应的格式输出显示
+    dst.convertTo(dst, CV_8UC3);             //转换成正常用于显示的8UC3格式
+    return dst;
 }
 
 //-----------Function2: 高斯模糊---------------//
 void gaussianFilter(Mat &img, double sigma)
 {
-	/*函数说明:
-	这个Function 实现的是高斯模糊, 但是主要的代码部分在于计算kernel size
-	本函数计算 kernel size 的公式是: 6 * sigma +1                 （1）
-	关于公式（1）的解释: 根据正态分布的 3σ 准则, 当自变量超过±3σ的范围之后, 高斯函数的概率密度值几乎为0
-	因此, 有效的窗口大小应为 6σ, 但由于 GaussianBlur 函数里面要求 kernel size为奇数, 因此做了+1处理
-	*/
+    /*函数说明:
+    这个Function 实现的是高斯模糊, 但是主要的代码部分在于计算kernel size
+    本函数计算 kernel size 的公式是: 6 * sigma +1                 （1）
+    关于公式（1）的解释: 根据正态分布的 3σ 准则, 当自变量超过±3σ的范围之后, 高斯函数的概率密度值几乎为0
+    因此, 有效的窗口大小应为 6σ, 但由于 GaussianBlur 函数里面要求 kernel size为奇数, 因此做了+1处理
+    */
 
     int filter_size;
     
