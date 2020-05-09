@@ -84,7 +84,7 @@ Mat MSR(Mat& input, Mat& dst)
     }
 
     Mat dst2;
-    dst = log_term[0] + log_term[1] + log_term[2];
+    dst2 = log_term[0] + log_term[1] + log_term[2];
 
 	
     dst = (dst2 * gain) + offset;            //时的dst值的范围并不是0–255，所以还需要进行线性拉伸并转换成相应的格式输出显示
