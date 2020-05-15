@@ -1,4 +1,4 @@
-//---------------------------Dark Channel Prior-----------------------//
+//---------------------------MCRCR-----------------------//
 //Configuration: Visual Studio 2010 + Opencv2.4.10
 //Author: ZiHao Zhou / South China University of Technology 
 //Date: 2020.5.15
@@ -17,13 +17,13 @@ int main()
 {
 	Mat scr;
 	scr = imread("test6.jpg", 1);
-	imshow("Ô­Í¼", scr);
+	imshow("åŸå›¾", scr);
 	Mat log_R, dst;
 	log_R= MSR(scr, dst);
 	
 	Mat dst1, dst2, output;
 	output = MSRCR(scr, log_R, 128.0, 1.0, 3.0, 128, 128, output);
-	imshow("MSRCRĞ§¹ûÍ¼", output);
+	imshow("MSRCRæ•ˆæœå›¾", output);
 
 	waitKey();
 	return 0;
@@ -32,18 +32,18 @@ int main()
 //-------------------Function 1: Multi-Scale Retinex-------------------//
 Mat MSR(Mat& input, Mat& dst)
 {
-	/*º¯ÊıËµÃ÷:
-	»ù±¾MSR²½Öè:
-	1. ½«Ô­Í¼×ª»»µ½¶ÔÊı¿Õ¼ä£¬µÃµ½Log[S(x,y)]
-	2. ½«Ô­Í¼°´ÕÕÈı¸ö²»Í¬µÄ³ß¶È×öGaussian filter£¬ÔÙ×ª¶ÔÊıÓò£¬·Ö±ğµÃµ½: Log[L_i(x,y)]
-	3. ¼ÆËã w_i(Log[S(x,y)] - Log[L_i(x,y)])£¬½«Èı¸öÏîÏà¼Ó£¬µÃµ½Log[R(x,y)]
-	4. ÓÉÓÚ´ËÊ±µÄ Log[R(x,y)] µÄÖµ²¢²»ÔÚ0-255·¶Î§ÄÚ£¬ËùÒÔĞèÒª½øĞĞÏßĞÔÀ­Éì
-	5. ×îºó×ª»»¸ñÊ½£¬µÃµ½ r(x,y) Êä³ö
+	/*å‡½æ•°è¯´æ˜:
+	åŸºæœ¬MSRæ­¥éª¤:
+	1. å°†åŸå›¾è½¬æ¢åˆ°å¯¹æ•°ç©ºé—´ï¼Œå¾—åˆ°Log[S(x,y)]
+	2. å°†åŸå›¾æŒ‰ç…§ä¸‰ä¸ªä¸åŒçš„å°ºåº¦åšGaussian filterï¼Œå†è½¬å¯¹æ•°åŸŸï¼Œåˆ†åˆ«å¾—åˆ°: Log[L_i(x,y)]
+	3. è®¡ç®— w_i(Log[S(x,y)] - Log[L_i(x,y)])ï¼Œå°†ä¸‰ä¸ªé¡¹ç›¸åŠ ï¼Œå¾—åˆ°Log[R(x,y)]
+	4. ç”±äºæ­¤æ—¶çš„ Log[R(x,y)] çš„å€¼å¹¶ä¸åœ¨0-255èŒƒå›´å†…ï¼Œæ‰€ä»¥éœ€è¦è¿›è¡Œçº¿æ€§æ‹‰ä¼¸
+	5. æœ€åè½¬æ¢æ ¼å¼ï¼Œå¾—åˆ° r(x,y) è¾“å‡º
 
 	*/
 	int gain = 128;
     int offset = 128;
-	Mat input_f, input_log, Li_log;           //×÷ÎªLog[S(x,y)]
+	Mat input_f, input_log, Li_log;           //ä½œä¸ºLog[S(x,y)]
 
 	vector<double> sigemas;
 
@@ -51,18 +51,18 @@ Mat MSR(Mat& input, Mat& dst)
 	sigemas.push_back(100);
 	sigemas.push_back(200);
 
-	//³õÊ¼»¯È¨ÖØ
+	//åˆå§‹åŒ–æƒé‡
 	vector<double> weights;
 	for (int i = 0; i < 3; i++)
     {
-       weights.push_back(1.f / 3);           //È¨ÖØÎª1/3
+       weights.push_back(1.f / 3);           //æƒé‡ä¸º1/3
     }
 
 	input.convertTo(input_f, CV_32FC3);     
-	log(input_f, input_log);                 //µÃµ½¶ÔÊıÓòÏÂµÄ Log[S(x,y)]
+	log(input_f, input_log);                 //å¾—åˆ°å¯¹æ•°åŸŸä¸‹çš„ Log[S(x,y)]
 
 
-    //¸ù¾İ¸ø¶¨µÄÈ¨ÖØ¹éÒ»»¯
+    //æ ¹æ®ç»™å®šçš„æƒé‡å½’ä¸€åŒ–
     double weight = 0;
     size_t num = weights.size();
     for (size_t i = 0; i < num; i++)
@@ -76,67 +76,67 @@ Mat MSR(Mat& input, Mat& dst)
     }
 
 	
-	vector<Mat> log_term;                    //¶ÔÊıÏîÈİÆ÷
+	vector<Mat> log_term;                    //å¯¹æ•°é¡¹å®¹å™¨
 
 	for(size_t i = 0; i < num; i++)
 	{
 		Mat blur = input_f.clone();
-		gaussianFilter(blur, sigemas[i]);    //¾­¹ı¸ßË¹ÂË²¨Ö®ºóµÃµ½ L_i(x,y)
-		log(blur, Li_log);                   //Ïàµ±ÓÚlog[L_i(x,y)]
-		log_term.push_back(weights[i]*(input_log - Li_log));    //µÚÒ»´ÎÖ´ĞĞ¾ÍÊÇµÚ0Ïî£¬½«ÔÚÊı×éµÄµÚÒ»Î»  w_i(Log[S(x,y)] - log[L_i(x,y)])
+		gaussianFilter(blur, sigemas[i]);    //ç»è¿‡é«˜æ–¯æ»¤æ³¢ä¹‹åå¾—åˆ° L_i(x,y)
+		log(blur, Li_log);                   //ç›¸å½“äºlog[L_i(x,y)]
+		log_term.push_back(weights[i]*(input_log - Li_log));    //ç¬¬ä¸€æ¬¡æ‰§è¡Œå°±æ˜¯ç¬¬0é¡¹ï¼Œå°†åœ¨æ•°ç»„çš„ç¬¬ä¸€ä½  w_i(Log[S(x,y)] - log[L_i(x,y)])
 	}
 
 	Mat dst2;
 	dst2 = log_term[0] + log_term[1] + log_term[2];
 
 	
-	dst = (dst2 * gain) + offset;            //Ê±µÄdstÖµµÄ·¶Î§²¢²»ÊÇ0¨C255£¬ËùÒÔ»¹ĞèÒª½øĞĞÏßĞÔÀ­Éì²¢×ª»»³ÉÏàÓ¦µÄ¸ñÊ½Êä³öÏÔÊ¾
-	dst.convertTo(dst, CV_8UC3);             //×ª»»³ÉÕı³£ÓÃÓÚÏÔÊ¾µÄ8UC3¸ñÊ½
-	return dst2;   //dst2¾ÍÊÇLog[R(x,y)]
+	dst = (dst2 * gain) + offset;            //æ—¶çš„dstå€¼çš„èŒƒå›´å¹¶ä¸æ˜¯0â€“255ï¼Œæ‰€ä»¥è¿˜éœ€è¦è¿›è¡Œçº¿æ€§æ‹‰ä¼¸å¹¶è½¬æ¢æˆç›¸åº”çš„æ ¼å¼è¾“å‡ºæ˜¾ç¤º
+	dst.convertTo(dst, CV_8UC3);             //è½¬æ¢æˆæ­£å¸¸ç”¨äºæ˜¾ç¤ºçš„8UC3æ ¼å¼
+	return dst2;   //dst2å°±æ˜¯Log[R(x,y)]
 }
 
-//-----------Function2: ¸ßË¹Ä£ºı---------------//
+//-----------Function2: é«˜æ–¯æ¨¡ç³Š---------------//
 void gaussianFilter(Mat &img, double sigma)
 {
-	/*º¯ÊıËµÃ÷:
-	Õâ¸öFunction ÊµÏÖµÄÊÇ¸ßË¹Ä£ºı, µ«ÊÇÖ÷ÒªµÄ´úÂë²¿·ÖÔÚÓÚ¼ÆËãkernel size
-	±¾º¯Êı¼ÆËã kernel size µÄ¹«Ê½ÊÇ: 6 * sigma +1                 £¨1£©
-	¹ØÓÚ¹«Ê½£¨1£©µÄ½âÊÍ: ¸ù¾İÕıÌ¬·Ö²¼µÄ 3¦Ò ×¼Ôò, µ±×Ô±äÁ¿³¬¹ı¡À3¦ÒµÄ·¶Î§Ö®ºó, ¸ßË¹º¯ÊıµÄ¸ÅÂÊÃÜ¶ÈÖµ¼¸ºõÎª0
-	Òò´Ë, ÓĞĞ§µÄ´°¿Ú´óĞ¡Ó¦Îª 6¦Ò, µ«ÓÉÓÚ GaussianBlur º¯ÊıÀïÃæÒªÇó kernel sizeÎªÆæÊı, Òò´Ë×öÁË+1´¦Àí
+	/*å‡½æ•°è¯´æ˜:
+	è¿™ä¸ªFunction å®ç°çš„æ˜¯é«˜æ–¯æ¨¡ç³Š, ä½†æ˜¯ä¸»è¦çš„ä»£ç éƒ¨åˆ†åœ¨äºè®¡ç®—kernel size
+	æœ¬å‡½æ•°è®¡ç®— kernel size çš„å…¬å¼æ˜¯: 6 * sigma +1                 ï¼ˆ1ï¼‰
+	å…³äºå…¬å¼ï¼ˆ1ï¼‰çš„è§£é‡Š: æ ¹æ®æ­£æ€åˆ†å¸ƒçš„ 3Ïƒ å‡†åˆ™, å½“è‡ªå˜é‡è¶…è¿‡Â±3Ïƒçš„èŒƒå›´ä¹‹å, é«˜æ–¯å‡½æ•°çš„æ¦‚ç‡å¯†åº¦å€¼å‡ ä¹ä¸º0
+	å› æ­¤, æœ‰æ•ˆçš„çª—å£å¤§å°åº”ä¸º 6Ïƒ, ä½†ç”±äº GaussianBlur å‡½æ•°é‡Œé¢è¦æ±‚ kernel sizeä¸ºå¥‡æ•°, å› æ­¤åšäº†+1å¤„ç†
 	*/
 
     int filter_size;
     
     if (sigma > 300)
     {
-        sigma = 300;                //²»ÄÜ´óÓÚ300£¬´óÓÚ300Ç¿ĞĞ¸Ä³É300
+        sigma = 300;                //ä¸èƒ½å¤§äº300ï¼Œå¤§äº300å¼ºè¡Œæ”¹æˆ300
     }
 
-    //»ñÈ¡ÂË²¨Æ÷µÄ´óĞ¡£¬×ªÎªÆæÊı
+    //è·å–æ»¤æ³¢å™¨çš„å¤§å°ï¼Œè½¬ä¸ºå¥‡æ•°
     filter_size = (int)floor(sigma * 6) +1;
 	cout<<filter_size<<" ";
 	
-    //Èç¹ûĞ¡ÓÚ3Ôò·µ»Ø
+    //å¦‚æœå°äº3åˆ™è¿”å›
     if (filter_size < 3)
     {
         return;
     }
 
-    GaussianBlur(img, img, Size(filter_size, filter_size), 0);    //½øĞĞ¸ßË¹Ä£ºı
+    GaussianBlur(img, img, Size(filter_size, filter_size), 0);    //è¿›è¡Œé«˜æ–¯æ¨¡ç³Š
 }
 
 //---------------------------------------------Function MSRCR_CS------------------------------------------------------------//
 Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dynamic, int gain, int offset, Mat& output)
 {
-	/*º¯ÊıËµÃ÷:
-	²ÎÊı1:  ÊäÈëµÄÔ­Ê¼Í¼Ïñ
-	²ÎÊı2: MSRËã·¨ËùµÃµ½µÄ¶ÔÊıÓòÏÂµÄÍ¼Ïñ, Ò²¾ÍÊÇ log[R_{MSR}(x,y)]
-	²ÎÊı3: alpha²ÎÊı
-	²ÎÊı4: beta²ÎÊı
-	²ÎÊı5: dynamic²ÎÊı: ¶¯Ì¬²ÎÊı£¨dynamicÔ½Ğ¡£¬Í¼ÏñµÄ¶Ô±È¶È¾ÍÔ½Ç¿£¬´Ë´¦Ñ¡Ôñdynamic=1Ğ§¹ûºÍGIMPÈí¼şÒ»ÖÂ)
-	²ÎÊı6: ÔöÒægain
-	²ÎÊı7: Æ«ÖÃoffset
-	²ÎÊı8: MSRCRËã·¨ÔËĞĞµÄÊä³öÍ¼Ïñ
+	/*å‡½æ•°è¯´æ˜:
+	å‚æ•°1:  è¾“å…¥çš„åŸå§‹å›¾åƒ
+	å‚æ•°2: MSRç®—æ³•æ‰€å¾—åˆ°çš„å¯¹æ•°åŸŸä¸‹çš„å›¾åƒ, ä¹Ÿå°±æ˜¯ log[R_{MSR}(x,y)]
+	å‚æ•°3: alphaå‚æ•°
+	å‚æ•°4: betaå‚æ•°
+	å‚æ•°5: dynamicå‚æ•°: åŠ¨æ€å‚æ•°ï¼ˆdynamicè¶Šå°ï¼Œå›¾åƒçš„å¯¹æ¯”åº¦å°±è¶Šå¼ºï¼Œæ­¤å¤„é€‰æ‹©dynamic=1æ•ˆæœå’ŒGIMPè½¯ä»¶ä¸€è‡´)
+	å‚æ•°6: å¢ç›Šgain
+	å‚æ•°7: åç½®offset
+	å‚æ•°8: MSRCRç®—æ³•è¿è¡Œçš„è¾“å‡ºå›¾åƒ
 	*/
 
 	Mat output2;
@@ -146,24 +146,24 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 	output = input.clone();
 	output.convertTo(output, CV_32FC3);
 	vector<Mat> split_input, split_MSR_input,split_output;
-	split(input, split_input);                                            //°ÑI(x,y)·Ö½â£¬type:CV_8UC1
+	split(input, split_input);                                            //æŠŠI(x,y)åˆ†è§£ï¼Œtype:CV_8UC1
 	split(output, split_output);
 
 	//cout<<"sss"<<split_output[0].type();
 
-	Mat add = split_input[0] + split_input[1] + split_input[2];           //Çó³ö sum_{i=1}^3I_i(x,y)
-	add.convertTo(add, CV_32FC1);                                         //±ØĞëÒª×ª»¯³ÉCV_32FµÄÀàĞÍ£¬·ñÔòÎŞ·¨½øĞĞ³Ë·¨¡¢³ı·¨µÄÔËËã
+	Mat add = split_input[0] + split_input[1] + split_input[2];           //æ±‚å‡º sum_{i=1}^3I_i(x,y)
+	add.convertTo(add, CV_32FC1);                                         //å¿…é¡»è¦è½¬åŒ–æˆCV_32Fçš„ç±»å‹ï¼Œå¦åˆ™æ— æ³•è¿›è¡Œä¹˜æ³•ã€é™¤æ³•çš„è¿ç®—
 
 	Mat A1, A2, A3;
 	A1 = split_input[0];
 	A2 = split_input[1];
 	A3 = split_input[2];
 
-	A1.convertTo(A1, CV_32FC1);                                           //MatµÄ³Ë·¨ĞèÒªµÄÀàĞÍÊÇ CV_32FCÀàĞÍ
+	A1.convertTo(A1, CV_32FC1);                                           //Matçš„ä¹˜æ³•éœ€è¦çš„ç±»å‹æ˜¯ CV_32FCç±»å‹
 	A2.convertTo(A2, CV_32FC1);
 	A3.convertTo(A3, CV_32FC1);
 
-	A1 = A1.mul(alpha);                                                   //¦ÁI_i(x,y)
+	A1 = A1.mul(alpha);                                                   //Î±I_i(x,y)
 	A2 = A2.mul(alpha);
 	A3 = A3.mul(alpha);
 
@@ -176,11 +176,11 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 	log(A2, A2);
 	log(A3, A3);
 
-	A1 = A1.mul(beta);                                                    //µÃµ½ÁËC_i
+	A1 = A1.mul(beta);                                                    //å¾—åˆ°äº†C_i
 	A2 = A2.mul(beta);
 	A3 = A3.mul(beta);
 	
-	split(log_MSR_input, split_MSR_input);                                //ÎÒÃÇĞèÒª½«C_iºÍ R_{MSR_i}(x,y)Ïà³Ë£¬¶øÕâÀïµÄR_{MSR_i}(x,y)µÄĞÎÊ½Ó¦¸ÃÊÇLog[R(x,y)]
+	split(log_MSR_input, split_MSR_input);                                //æˆ‘ä»¬éœ€è¦å°†C_iå’Œ R_{MSR_i}(x,y)ç›¸ä¹˜ï¼Œè€Œè¿™é‡Œçš„R_{MSR_i}(x,y)çš„å½¢å¼åº”è¯¥æ˜¯Log[R(x,y)]
 
 	cout<<log_MSR_input.type()<<endl;
 	
@@ -192,23 +192,23 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 	split_MSR_input[2].convertTo(split_MSR_input[2], CV_32FC1);
 
 
-	split_MSR_input[0] = split_MSR_input[0].mul(A1);                       //Õâ¸ö¾ÍÊÇ log[R_{MSRCR_i}(x,y)]
+	split_MSR_input[0] = split_MSR_input[0].mul(A1);                       //è¿™ä¸ªå°±æ˜¯ log[R_{MSRCR_i}(x,y)]
 	split_MSR_input[1] = split_MSR_input[1].mul(A2);
 	split_MSR_input[2] = split_MSR_input[2].mul(A3);
 	
 
-	merge(split_MSR_input, output2);                                        //µÃµ½ÁË R_MSRCR(x,y)
+	merge(split_MSR_input, output2);                                        //å¾—åˆ°äº† R_MSRCR(x,y)
 
-	//output = (output * gain) + offset;                                    //Ê±µÄdstÖµµÄ·¶Î§²¢²»ÊÇ0¨C255£¬ËùÒÔ»¹ĞèÒª½øĞĞÏßĞÔÀ­Éì²¢×ª»»³ÉÏàÓ¦µÄ¸ñÊ½Êä³öÏÔÊ¾
-	//output.convertTo(output, CV_8UC3);                                    //×ª»»³ÉÕı³£ÓÃÓÚÏÔÊ¾µÄ8UC3¸ñÊ½
+	//output = (output * gain) + offset;                                    //æ—¶çš„dstå€¼çš„èŒƒå›´å¹¶ä¸æ˜¯0â€“255ï¼Œæ‰€ä»¥è¿˜éœ€è¦è¿›è¡Œçº¿æ€§æ‹‰ä¼¸å¹¶è½¬æ¢æˆç›¸åº”çš„æ ¼å¼è¾“å‡ºæ˜¾ç¤º
+	//output.convertTo(output, CV_8UC3);                                    //è½¬æ¢æˆæ­£å¸¸ç”¨äºæ˜¾ç¤ºçš„8UC3æ ¼å¼
 
 	
 	Mat means, stddev;
-	meanStdDev(output2, means, stddev);                                     //¼ÆËãLog[R(x,y)]µÄ¾ùÖµºÍ·½²î
+	meanStdDev(output2, means, stddev);                                     //è®¡ç®—Log[R(x,y)]çš„å‡å€¼å’Œæ–¹å·®
 
 	
 	double min1, max1, min2, max2, min3, max3;
-	min1 = means.at<double>(0) - dynamic * stddev.at<double>(0);            //µÚÒ»¸öÍ¨µÀµÄminºÍmax, Dynamic = 1
+	min1 = means.at<double>(0) - dynamic * stddev.at<double>(0);            //ç¬¬ä¸€ä¸ªé€šé“çš„minå’Œmax, Dynamic = 1
 	max1 = means.at<double>(0) + dynamic * stddev.at<double>(0);  
 
 	min2 = means.at<double>(1) - dynamic * stddev.at<double>(1);  
@@ -224,7 +224,7 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 		{
 			split_output[0].at<float>(rows, cols) = (split_MSR_input[0].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
 			
-			if(split_output[0].at<float>(rows, cols) > 255)                  //Òç³ö¿ØÖÆ
+			if(split_output[0].at<float>(rows, cols) > 255)                  //æº¢å‡ºæ§åˆ¶
 			{
 				split_output[0].at<float>(rows, cols) = 255;
 			}
