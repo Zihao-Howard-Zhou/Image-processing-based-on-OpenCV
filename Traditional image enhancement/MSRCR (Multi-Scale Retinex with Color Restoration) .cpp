@@ -222,9 +222,9 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 	{
 		for(int cols = 0; cols < split_MSR_input[0].cols; cols++)
 		{
-			split_output[0].at<float>(rows, cols) = (split_MSR_input[0].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
-			
-			if(split_output[0].at<float>(rows, cols) > 255)                  //溢出控制
+			split_output[0].at<float>(rows, cols) = saturate_cast<float>(split_MSR_input[0].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
+		        /*
+			if(split_output[0].at<float>(rows, cols) > 255)                  //溢出控制原理
 			{
 				split_output[0].at<float>(rows, cols) = 255;
 			}
@@ -235,8 +235,9 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 					split_output[0].at<float>(rows, cols) = 0;
 				}
 			}
-			split_output[1].at<float>(rows, cols) = (split_MSR_input[1].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
-
+			*/
+			split_output[1].at<float>(rows, cols) = saturate_cast<float>(split_MSR_input[1].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
+			/*
 			if(split_output[1].at<float>(rows, cols) > 255)
 			{
 				split_output[1].at<float>(rows, cols) = 255;
@@ -248,8 +249,9 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 					split_output[1].at<float>(rows, cols) = 0;
 				}
 			}
-			split_output[2].at<float>(rows, cols) = (split_MSR_input[2].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
-
+			*/
+			split_output[2].at<float>(rows, cols) = saturate_cast<float>(split_MSR_input[2].at<float>(rows, cols) - min1) / (max1 - min1) * (255 - 0);
+			/*
 			if(split_output[2].at<float>(rows, cols) > 255)
 			{
 				split_output[2].at<float>(rows, cols) = 255;
@@ -261,6 +263,7 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 					split_output[2].at<float>(rows, cols) = 0;
 				}
 			}
+			*/
 			
 		}
 	}
