@@ -242,7 +242,7 @@ Mat MSRCR(Mat& input, Mat& log_MSR_input, double alpha, double beta, double dyna
 				split_output[1].at<float>(rows, cols) = 255;
 			}
 			else
-			{
+			{ 
 				if(split_output[1].at<float>(rows, cols) < 0)
 				{
 					split_output[1].at<float>(rows, cols) = 0;
