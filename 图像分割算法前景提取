@@ -1,0 +1,136 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <math.h>
+
+using namespace cv;
+using namespace std;
+
+//在图片中定义(一个或者多个)包含物体的矩形。
+//矩形外的区域被自动认为是背景。
+//对于用户定义的矩形区域，可用背景中的数据来区分它里面的前景和背景区域。
+//用高斯混合模型(GMM)来对背景和前景建模，并将未定义的像素标记为可能的前景或者背景。
+//图像中的每一个像素都被看做通过虚拟边与周围像素相连接，而每条边都有一个属于前景或者背景的概率，这是基于它与周边像素颜色上的相似性。
+//每一个像素(即算法中的节点)会与一个前景或背景节点连接。
+//在节点完成连接后(可能与背景或前景连接)，若节点之间的边属于不同终端(即一个节点属于前景，另一个节点属于背景)，则会切断他们之间的边，这就能将图像各部分分割出来。下图能很好的说明该算法：
+
+Rect rect;
+bool init = false;
+Mat src;
+Mat mask, bgModel, fgModel;
+
+const char* winTitle = "input image";
+
+void onMouse(int event, int x, int y, int flags, void* param);
+void setROIMask();
+void showImage();
+void runGrabCut();
+
+int main()
+{
+	src = imread("test9.jpg");
+	if (src.empty())
+	{
+		cout << "could not load image..." << endl;
+		return -1;
+	}
+	mask.create(src.size(), CV_8UC1);
+	mask.setTo(Scalar::all(GC_BGD));	//和原图一样大小的黑色掩膜
+
+	namedWindow(winTitle, WINDOW_NORMAL);	//声明窗口
+	setMouseCallback(winTitle, onMouse);		//设置鼠标回调函数
+	imshow(winTitle, src);	//展示原图
+
+	/*namedWindow("背景", WINDOW_NORMAL);
+	imshow("背景", bgModel);
+	namedWindow("前景", WINDOW_NORMAL);
+    imshow("前景",fgModel);*/
+	//这一段是执行不了的
+	waitKey(0);
+	return 0;
+}
+
+void showImage()
+{
+	Mat result, binMask;
+	binMask.create(mask.size(), CV_8UC1);
+	binMask = mask & 1;//两个图像可以这样做交运算，但这是啥？我没查出来
+	if (init)//图割算法执行后执行
+	{
+		src.copyTo(result, binMask);
+	}
+	//
+	else//按下鼠标之后执行
+	{
+		src.copyTo(result);
+	}
+	rectangle(result, rect, Scalar(0, 0, 255), 2, 8);	//画矩形
+	imshow(winTitle, result);
+}
+
+void setROIMask()
+{
+	//GC_BGD=0----背景
+	//GC_FGD=1----前景
+	//GC_PR_BGD=2----可能为背景
+	//GC_PR_FGD=3----可能为前景	
+	mask.setTo(GC_BGD);		//全部设置为背景
+	rect.x = max(0, rect.x);	//防止溢出
+	rect.y = max(0, rect.y);
+	rect.width = min(rect.width, src.cols - rect.x);
+	rect.height = min(rect.height, src.rows - rect.y);
+	mask(rect).setTo(Scalar(GC_PR_FGD));	//将矩形区域设置为可能的前景
+}
+
+void onMouse(int event, int x, int y, int flags, void* param)
+{
+	switch (event)
+	{
+	case EVENT_LBUTTONDOWN:	//鼠标左键按下事件
+		rect.x = x;
+		rect.y = y;
+		rect.width = 1;
+		rect.height = 1;
+		init = false;
+		break;
+	case EVENT_MOUSEMOVE:	//鼠标移动事件
+		if (flags & EVENT_FLAG_LBUTTON)
+		{
+			rect = Rect(Point(rect.x, rect.y), Point(x, y));
+			showImage();
+		}
+		break;
+	case EVENT_LBUTTONUP:	//鼠标左键松开事件
+		if (rect.width > 1 && rect.height > 1)
+		{
+			setROIMask();	//设置矩形区域为可能前景区域
+			showImage();
+			runGrabCut();
+			showImage();
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void runGrabCut()
+{
+	if (rect.width < 2 || rect.height < 2)
+		return;
+	if (init)
+	{
+		grabCut(src, mask, rect, bgModel, fgModel, 5);	//图割算法
+	}
+	else{
+		grabCut(src, mask, rect, bgModel, fgModel, 5, GC_INIT_WITH_RECT);
+		init = true;
+	}
+}
+//输入原图像，输入掩膜，用户框的矩形提取区，输出背景，输出前景，迭代次数
+//最后一个参数为0为用矩形窗，为2执行分割（默认），为1用掩码图
+//处理的结果会保存在掩码图中
+
+//GCD_BGD（ = 0），背景；是个黑的
+//GCD_FGD（ = 1），前景；
+//GCD_PR_BGD（ = 2），可能的背景；
+//GCD_PR_FGD（ = 3），可能的前景。
