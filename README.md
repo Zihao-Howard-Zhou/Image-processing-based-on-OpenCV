@@ -16,15 +16,15 @@ We focus on image enhancement and reconstruction technology based on OpenCV, and
    Advantages: Some othor algorithm fuses advantage maps(such as illuminance diagram, chromaticity diagram and saliency diagram) based on laplacian pyramid.
    Limitations: The design of the mask is flexible and changeable. It requires some skills.
 
-2. Dark Channel Prior
+2. Dark Channel Prior  
    Adavantages: It made a great breakthrough in the task of dealing with fog pictures on land.
    Limitations: There are still some changes to be made when the land fog imaging model is moved to underwater.
 
-3. Multi-scale detail enhancement
+3. Multi-scale detail enhancement  
    Advantages: This algorithm is quite simple but has achieved good result. It filters the original image with gaussian kernal under different scale.Using the original image to subtract from these images blurred by different scales of Gauss, so that we can get the detail of origin image.
    Limitations:There will be some distortion in the image
    
-4. MSR and MSRCR
+4. MSR and MSRCR  
    Generally, the result of MSR is just so so, and it will bring Color distortion. However, when the Color recovery factor is introduced(MSRCR), the effect of algorithm has become greater
    Limitations: The parameters : dynamic, is not so flexible.(the smaller the dynamic is, the stronger image contrast)
 
