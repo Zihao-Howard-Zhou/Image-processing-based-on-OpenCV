@@ -1,0 +1,36 @@
+#include<iostream>
+#include<opencv2/opencv.hpp>
+#include<opencv2/highgui.hpp>
+#include<opencv2/imgproc.hpp>
+using namespace std;
+using namespace cv;
+int main()
+{
+	Mat src = imread("test4.jpg");
+	imshow("yuantu", src);
+	if (!src.data)
+	{
+		cout << "又错了" << endl;
+	}
+	Mat dst;
+	vector<Mat>channels;
+	split(src, channels);
+	Mat image1, image2, image3;
+	image1 = channels[0];//容器到图像的转化
+	image2 = channels[1];
+	image3 = channels[2];
+	equalizeHist(image1, image1);
+	equalizeHist(image2, image2);
+	equalizeHist(image3, image3);
+	merge(channels, dst);
+	namedWindow("效果图", WINDOW_NORMAL);
+	imshow("效果图", dst);
+	Mat kern = (Mat_<char>(3, 3) << -1, -1, -1,
+		-1, 9, -1,
+		-1, -1, -1);
+	Mat dstt;
+	filter2D(dst, dstt, -1, kern);
+	imshow("dstt",dst);
+	waitKey(0);
+	return 0;
+}
