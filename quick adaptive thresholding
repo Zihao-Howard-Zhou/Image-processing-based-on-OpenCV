@@ -1,0 +1,208 @@
+#include<opencv2/highgui/highgui.hpp>
+#include<opencv2/opencv.hpp>
+#include<opencv2/imgproc/imgproc.hpp>
+#include<opencv2/core/core.hpp>
+#include<cmath>
+
+using namespace cv;
+using namespace std;
+
+void resizeROI(Mat input, Mat &output);
+void select(Mat input, Mat &output);
+void singlepixelthreshold(Mat input, double &output, int rownumber, int i, int s);
+
+int main()
+{
+	//计算运行时间
+	double time = static_cast<double>(getTickCount());
+	time = ((double)getTickCount() - time) / getTickFrequency();
+	cout << "运行时间为：" << time << "s" << endl;
+
+	Mat srcimage, midimage1, midimage2, midimage3, dstimage;
+	srcimage = imread("test2.jpg");
+	dstimage = srcimage.clone();
+	
+	cvtColor(srcimage, midimage1, COLOR_BGR2GRAY);	//图片本身并非彩图，该操作不是必要的
+	
+	GaussianBlur(midimage1, midimage2, Size(3, 3), 0);
+	//blur(midimage1, midimage2, Size(3, 3));		   //不好使
+
+	Mat element = getStructuringElement(MORPH_RECT, Size(3, 3));	//获得结构元素
+	dilate(midimage2, midimage2, element);	 //膨胀操作,去掉内部轮廓
+	
+	//二值化消除内部细节	
+	threshold(midimage2, midimage3, 20, 255, THRESH_BINARY);	//THRESH_BINARY_INV可提取黑线
+	//调节了最低阈值到20    6/26/2020
+
+	Canny(midimage3, midimage3, 50, 200, 5);               //对其必要性表示怀疑
+
+	vector<vector<Point>>contours;
+	vector<Vec4i>hierarchy;
+	//只找外边框，保留全部细节
+	findContours(midimage3, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE, Point(0, 0));
+	
+	vector<Rect>boundRect(contours.size());
+	for (int i = 0; i < contours.size(); i++)              //寻找最小正矩形框
+	{
+		boundRect[i] = boundingRect(Mat(contours[i]));
+	}
+
+	for (int i = 0; i < boundRect.size(); i++)          //绘制最小正矩形框
+	{
+		rectangle(dstimage, boundRect[i].tl(), boundRect[i].br(), Scalar(10,10,255), 1, 8, 0);
+	}
+
+	vector<Mat>srcROI(boundRect.size());
+	for (int i = 0; i < srcROI.size(); i++)             //读取ROI
+	{
+		srcROI[i] = srcimage(Rect(boundRect[i].tl(), boundRect[i].size()));
+		//srcROI[i] = srcimage(Rect(boundRect[i].tl(), boundRect[i].br()));
+	}
+	
+	namedWindow("1", WINDOW_NORMAL);
+	imshow("1", srcROI[0]);/*
+	imshow("2", srcROI[1]);  
+	imshow("3", srcROI[2]);
+	*/
+
+	/*vector<Mat>srcROI(srcROI.size());
+	for (int i = 0; i < srcROI.size(); i++)
+	{
+		resizeROI(srcROI[i], srcROI[i]);		//裁剪ROI，在测试里发现，由于本来框的拟合就较好这个resize意义并不是很大
+	}
+	*/
+	//*********************接下来取特殊值进行计算，便于检验算法***********************//
+	int s = ((srcROI[0].rows / 8)+0.5);			//得到s的合适值,四舍五入
+	//cout << "s=" << s << endl;
+	//select(srcROI[i], srcROI[i]);				//仅作为测试
+	select(srcROI[0], srcROI[0]);
+	
+	namedWindow("raw", WINDOW_NORMAL);
+	imshow("raw", srcROI[0]);
+	
+	int rownumber = srcROI[0].rows;
+	
+	double T = 0;
+	int output = 0;
+	vector<int>outputarray;		//result array
+	//先处理前s-1个像素，这里的思路是用第s个像素的阈值来代替其阈值
+	singlepixelthreshold(srcROI[0], T, rownumber, s-1, s);
+	for (int i = 0; i < s-1; i++)
+	{
+		uchar* data = srcROI[0].ptr<uchar>(i);
+		if (data[0] > T)
+		{
+			output = 1;						//默认白色为1 
+		}
+		else
+		{
+			output = 0;
+		}
+		outputarray.push_back(output);
+	}
+	//处理后面的像素
+	for (int i = s-1; i < rownumber; i++)
+	{
+		singlepixelthreshold(srcROI[0], T, rownumber, i, s);
+		uchar* data = srcROI[0].ptr<uchar>(i);
+		if (data[0] > T)
+		{
+			output = 1;						//默认白色为1 
+		}
+		else
+		{
+			output = 0;
+		}
+		outputarray.push_back(output);
+	}
+
+	
+	for (int i = 0; i < outputarray.size(); i++)
+	{
+		cout << outputarray[i]<<",";
+	}
+	
+
+	namedWindow("原图", WINDOW_NORMAL);
+	imshow("原图", srcimage);
+	
+	namedWindow("效果图", WINDOW_NORMAL);
+	imshow("效果图", dstimage);
+
+	waitKey(0);
+	return 0;
+}
+
+void resizeROI(Mat input, Mat &output) {				//筛选出不全为0的行，作为新ROI的边界
+
+	int rownumber = input.rows;
+	int colnumber = input.cols;
+	int top, bottom;								//记录行数
+	//TOP
+	for (int i = 0; i < rownumber; i++)				//会损失掉一开始部分的0信号
+	{
+		int exit = 0;
+		uchar* data = input.ptr<uchar>(i);
+		for (int j = 0; j < colnumber; j++)
+		{
+			if (data[j] <= 20) {			//背景并不是全黑的，所以不能取0
+				continue;
+			}
+			else {
+				exit = 1;
+				break;
+			}
+		}
+		if (exit == 1) {
+			top = i;
+			break;
+		}
+	}
+	//BOTTOM
+	for (int i = rownumber-1; i > 0; i--)				//会损失掉末尾部分的0信号
+	{
+		int exit = 0;
+		uchar* data = input.ptr<uchar>(i);
+		for (int j = 0; j < colnumber; j++)
+		{
+			if (data[j] <= 20) {
+				continue;
+			}
+			else {
+				exit = 1;
+				break;
+			}
+		}
+		if (exit == 1) {
+			bottom = i;
+			break;
+		}
+	}
+	output = input(Rect(0, top, colnumber, bottom - top + 1));				//截图
+}
+
+void select(Mat input, Mat &output) {
+	int rownumber = input.rows;
+	int colnumber = input.cols;
+	if (colnumber%2==0)				//整除
+	{
+		output = input(Rect((colnumber / 2) - 1, 0, 2, rownumber));
+	}
+	else {
+		output = input(Rect((colnumber / 2) - 1, 0, 3, rownumber));
+	}
+}
+
+void singlepixelthreshold(Mat input, double &output, int rownumber, int i, int s) {
+	double T = 0;
+	double f = 0;
+	int n = 0;
+	for (int j = i; j > i-s; j--)
+	{
+		uchar* data = input.ptr<uchar>(j);
+		T += pow((1 - 1.f / s), n)*data[0];
+		f += pow((1 - 1.f / s), n);
+		n++;
+	}
+	output = 0.85*T / f;				//这里的r取0.85，得到最终的阈值
+}
