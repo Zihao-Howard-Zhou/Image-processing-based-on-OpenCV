@@ -1,78 +1,80 @@
 /*--------------------------------------------------------------------------------------
-		   ±¾´úÂëÊÇÊ¹ÓÃEVAÊµÏÖLEDµÄÊı¾İÂß¼­¼ì²â
-´úÂëÈÕÖ¾:
-×÷Õß:ZZH South China University of Technology
-Ê±¼ä: 2020Äê6ÔÂ29ÈÕ 17:34
+           æœ¬ä»£ç æ˜¯ä½¿ç”¨EVAå®ç°LEDçš„æ•°æ®é€»è¾‘æ£€æµ‹
+ä»£ç æ—¥å¿—:
+ä½œè€…:ZZH South China University of Technology
+æ—¶é—´: 2020å¹´6æœˆ29æ—¥ 17:34
 
-°æ±¾: 1.0.0
+ç‰ˆæœ¬: 1.0.0
 
-Ä¿Ç°´úÂë¿ÉÊµÏÖµÄ¹¦ÄÜ:Íê³ÉÁËEVAËã·¨,¿ÉÒÔµÃµ½²ÉÑùÖ®ºóµÄÅĞ¾ö½á¹û
+ç›®å‰ä»£ç å¯å®ç°çš„åŠŸèƒ½:å®Œæˆäº†EVAç®—æ³•,å¯ä»¥å¾—åˆ°é‡‡æ ·ä¹‹åçš„åˆ¤å†³ç»“æœ
 
-ÔİÊ±Î´ÊµÏÖµÄ¹¦ÄÜ: ²éÕÒheader,½øÒ»²½ÌáÈ¡ID
-Äâ²ÉÓÃµÄ·½°¸: ÓÉÓÚheaderÊÇ010101ÕâÑùµÄĞòÁĞ,¹Ê¿ÉÒÔ²ÉÑù¼òµ¥µÄÄ£°åÆ¥ÅäÈ¥ÕÒ010101µÄ²¿·Ö
+æš‚æ—¶æœªå®ç°çš„åŠŸèƒ½: æŸ¥æ‰¾header,è¿›ä¸€æ­¥æå–ID
+æ‹Ÿé‡‡ç”¨çš„æ–¹æ¡ˆ: ç”±äºheaderæ˜¯010101è¿™æ ·çš„åºåˆ—,æ•…å¯ä»¥é‡‡æ ·ç®€å•çš„æ¨¡æ¿åŒ¹é…å»æ‰¾010101çš„éƒ¨åˆ†
 
-´ı½â¾öµÄBUG: ¶ÔÓÚµÚ¶ş¸öROIµÄÌáÈ¡,×ó±ß×ÜÊÇ¶à³öÒ»Ğ¡¿éºÚÉ«²¿·Ö,»¹ĞèÒªË¼¿¼ÔõÃ´È¥³ı
-Äâ²ÉÓÃ·½°¸: ÏÂÃæ±»×¢ÊÍµôµÄthin_imageº¯Êı£¨´ı¸Ä£©
+å¾…è§£å†³çš„BUG: å¯¹äºç¬¬äºŒä¸ªROIçš„æå–,å·¦è¾¹æ€»æ˜¯å¤šå‡ºä¸€å°å—é»‘è‰²éƒ¨åˆ†,è¿˜éœ€è¦æ€è€ƒæ€ä¹ˆå»é™¤
+æ‹Ÿé‡‡ç”¨æ–¹æ¡ˆ: ä¸‹é¢è¢«æ³¨é‡Šæ‰çš„thin_imageå‡½æ•°ï¼ˆå¾…æ”¹ï¼‰
 --------------------------------------------------------------------------------------*/
 
-//-----------------------------Í·ÎÄ¼şÉùÃ÷²¿·Ö-----------------------------------------//
+//-----------------------------å¤´æ–‡ä»¶å£°æ˜éƒ¨åˆ†-----------------------------------------//
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include<iostream>
 #include<string>
 #include <algorithm>
 
-//----------------------------ÃüÃû¿Õ¼ä------------------------------------------------//
+//----------------------------å‘½åç©ºé—´------------------------------------------------//
 using namespace cv;
 using namespace std;
 
-//---------------------------º¯ÊıÉùÃ÷²¿·Ö--------------------------------------------//
+//---------------------------å‡½æ•°å£°æ˜éƒ¨åˆ†--------------------------------------------//
 double getThreshVal_Otsu_8u(const Mat& _src);
-void bwareaopen(Mat& data, int n);
+void bwareaopen(Mat &data, int n);
 void ls_LED(const Mat& _img, int& X_min, int& X_max, int& Y_min, int& Y_max, Mat& imgNext, int ii);
 //Mat thin_image(Mat& imgCut1, Mat& thin_img_cut);
 
-//--------------------------mainº¯Êı²¿·Ö---------------------------------------------//
+//--------------------------mainå‡½æ•°éƒ¨åˆ†---------------------------------------------//
 int main()
 {
 	Mat imageLED1;
-	imageLED1 = imread("image1.jpg", 1);
-	resize(imageLED1, imageLED1, Size(1280, 960), 0, 0, INTER_NEAREST);
-	//imshow("¡¾Ô­Í¼¡¿", imageLED1);
-
+	imageLED1 = imread("frame0013.jpg", 1);
+	resize(imageLED1,imageLED1,Size(1280,960),0,0,INTER_NEAREST);
+	//imshow("ã€åŸå›¾ã€‘", imageLED1);
+	
 	Mat grayImage;
-	cvtColor(imageLED1, grayImage, COLOR_BGR2GRAY);
+	cvtColor(imageLED1, grayImage,COLOR_BGR2GRAY);
 	//imshow("grayImage", grayImage);
 
 	double m_threshold;
 	Mat matBinary;
 	m_threshold = getThreshVal_Otsu_8u(grayImage);
-	threshold(grayImage, matBinary, m_threshold, 255, 0);
+	threshold(grayImage, matBinary, m_threshold, 255, 0); 
 	//imshow("matBinary", matBinary);
 
 	Mat element = getStructuringElement(MORPH_ELLIPSE, Size(20, 20));
 	morphologyEx(matBinary, matBinary, MORPH_CLOSE, element);
-	//imshow("±ÕÔËËãĞ§¹û", matBinary);
+	//imshow("é—­è¿ç®—æ•ˆæœ", matBinary);
 
 	int Img_local_X1, Img_local_Y1, Img_local_X2, Img_local_Y2, Img_local_X3, Img_local_Y3;
 	Mat img1_next, matBinary11, img2_next, matBinary2, img3_next, matBinary3;
 	int X1_min, X1_max, Y1_min, Y1_max, X2_min, X2_max, Y2_min, Y2_max, X3_min, X3_max, Y3_min, Y3_max;
 
-	for (int ii = 1; ii < 4; ii++)
+	for (int ii = 1;ii < 4;ii++)
 	{
 		int X_min, X_max, Y_min, Y_max;
 		Mat img_next;
-		ls_LED(matBinary, X_min, X_max, Y_min, Y_max, img_next, ii);                                 //»ñµÃÒ»¸öROI
+		ls_LED(matBinary, X_min, X_max, Y_min, Y_max, img_next, ii);                                 //è·å¾—ä¸€ä¸ªROI
 
-		double Img_local_X = (X_max + X_min) / 2;                                                //»ñµÃLED1ÏñËØÖĞĞÄµÄÎ»ÖÃ
+		double Img_local_X = (X_max + X_min) / 2;                                                //è·å¾—LED1åƒç´ ä¸­å¿ƒçš„ä½ç½®
 		double Img_local_Y = (Y_max + Y_min) / 2;
 
-		//½«Ô­Í¼ÖĞLED1²¿·ÖµÄÇøÓò±äºÚ(±äºÚµÄÄ¿µÄÊÇÎªÁËÏÂÒ»´ÎÊ¹ÓÃ1s_LEDµÄÊ±ºò¿ÉÒÔ¼ì²âµ½ÆäËûROI)
+	    //å°†åŸå›¾ä¸­LED1éƒ¨åˆ†çš„åŒºåŸŸå˜é»‘(å˜é»‘çš„ç›®çš„æ˜¯ä¸ºäº†ä¸‹ä¸€æ¬¡ä½¿ç”¨1s_LEDçš„æ—¶å€™å¯ä»¥æ£€æµ‹åˆ°å…¶ä»–ROI)
 
-		// »ñÈ¡Í¼ÏñµÄĞĞÁĞ
-		double rowB = matBinary.rows;															 // ¶şÖµ»¯Í¼ÏñµÄĞĞÊı
-		double colB = matBinary.cols;															 //¶şÖµ»¯Í¼ÏñµÄÁĞÊı
+		// è·å–å›¾åƒçš„è¡Œåˆ—
+		double rowB = matBinary.rows;															 // äºŒå€¼åŒ–å›¾åƒçš„è¡Œæ•°
+		double colB = matBinary.cols;															 //äºŒå€¼åŒ–å›¾åƒçš„åˆ—æ•°
 		Mat matBinary1 = matBinary.clone();
+
+		
 		/*
 		for (double i = 0;i < rowB;i++)
 		{
@@ -94,31 +96,31 @@ int main()
 		//bwareaopen(matBinary, 500);//
 		*/
 		//----------------important--------------//
-		for (int i = Y_min - 5; i < Y_max + 5; i++)
+		for(int i = Y_min - 5; i < Y_max + 5; i++)
 		{
-			for (int j = X_min - 5; j < X_max + 5; j++)
+			for(int j = X_min - 5; j < X_max + 5; j++)
 			{
 				matBinary.at<uchar>(i, j) = 0;
 			}
 		}
-
-
-		//-------------ÏÂÃæ¿´Ò»ÏÂÃ¿Ò»´Îls_LEDÖ®ºóÒ²Ã»ÓĞ°ÑÒÑ¾­¼ì²â³öÀ´µÄÇøÓò±äºÚ------------//
+		
+		
+		//-------------ä¸‹é¢çœ‹ä¸€ä¸‹æ¯ä¸€æ¬¡ls_LEDä¹‹åä¹Ÿæ²¡æœ‰æŠŠå·²ç»æ£€æµ‹å‡ºæ¥çš„åŒºåŸŸå˜é»‘------------//
 		/*
 		stringstream temp;
 		temp<<ii;
 		string s1 = temp.str();
 		imshow(s1, matBinary);
 		*/
-
-		switch (ii)                                                            //ii±íÊ¾ÊÇÄÄ¸öµÆ
+		
+		switch (ii)                                                            //iiè¡¨ç¤ºæ˜¯å“ªä¸ªç¯
 		{
 		case 1:
 			img1_next = img_next.clone();
 			Img_local_X1 = Img_local_X;
 			Img_local_Y1 = Img_local_Y;
 			matBinary11 = matBinary1.clone();
-
+			
 			X1_min = X_min;
 			X1_max = X_max;
 			Y1_min = Y_min;
@@ -129,7 +131,7 @@ int main()
 			Img_local_X2 = Img_local_X;
 			Img_local_Y2 = Img_local_Y;
 			matBinary2 = matBinary1.clone();
-
+			
 			X2_min = X_min;
 			X2_max = X_max;
 			Y2_min = Y_min;
@@ -140,7 +142,7 @@ int main()
 			Img_local_X3 = Img_local_X;
 			Img_local_Y3 = Img_local_Y;
 			matBinary3 = matBinary1.clone();
-
+			
 			X3_min = X_min;
 			X3_max = X_max;
 			Y3_min = Y_min;
@@ -149,382 +151,390 @@ int main()
 		}
 	}
 
-	Mat imageLED = imageLED1(Rect(X1_min, Y1_min, X1_max - X1_min, Y1_max - Y1_min));
+	Mat imageLED=imageLED1(Rect(X1_min, Y1_min, X1_max - X1_min, Y1_max - Y1_min));
 	//imageLED = thin_image(imageLED, imageLED);
-	//imshow("select_ROI_1", imageLED);                                                                    //Êä³ö¶ÔÓ¦µÄROIÇøÓò  
+    imshow("select_ROI_1", imageLED);                                                                    //è¾“å‡ºå¯¹åº”çš„ROIåŒºåŸŸ  
 
 	Mat imageLED2 = imageLED1(Rect(X2_min, Y2_min, X2_max - X2_min, Y2_max - Y2_min));
 	//imageLED2 = thin_image(imageLED2, imageLED2);
-	//imshow("select_ROI_2", imageLED2);                                                                    //Êä³ö¶ÔÓ¦µÄROIÇøÓò  
+    //imshow("select_ROI_2", imageLED2);                                                                    //è¾“å‡ºå¯¹åº”çš„ROIåŒºåŸŸ  
 
-	Mat imageLED3 = imageLED1(Rect(X3_min, Y3_min, X3_max - X3_min, Y3_max - Y3_min));
+	Mat imageLED3=imageLED1(Rect(X3_min, Y3_min, X3_max - X3_min, Y3_max - Y3_min));
 	//imageLED3 = thin_image(imageLED3, imageLED3);
-	imshow("select_ROI_3", imageLED3);                                                                    //Êä³ö¶ÔÓ¦µÄROIÇøÓò  
+    //imshow("select_ROI_3", imageLED3);                                                                    //è¾“å‡ºå¯¹åº”çš„ROIåŒºåŸŸ  
 
-	cvtColor(imageLED, imageLED, COLOR_BGR2GRAY);
+	cvtColor(imageLED,imageLED,COLOR_BGR2GRAY);
 
-	Mat msgDateoringal = imageLED3.col(imageLED3.size().height / 2);                                       //msgDateoringal±íÊ¾ÖĞ¼äÁĞÏñËØ¾ØÕó
-	//cout<<msgDateoringal.t().size()<<endl;                                                            Ò»¸öLED_ROIµÄÎ¬¶ÈÊÇ 46ĞĞ1ÁĞ
+	Mat msgDateoringal=imageLED.col(imageLED.size().height / 2);                                       //msgDateoringalè¡¨ç¤ºä¸­é—´åˆ—åƒç´ çŸ©é˜µ
+	cout<<"-----------------------------------------"<<endl;
+    cout<<"è¿™ä¸ªLED_ROIçš„ç»´åº¦æ˜¯:"<<msgDateoringal.t().size()<<endl;                                                            //ä¸€ä¸ªLED_ROIçš„ç»´åº¦æ˜¯ 46è¡Œ1åˆ—
 
-	cout << "-----------------------------------------" << endl;
-	cout << "ÖĞ¼äÁĞÏñËØmsgDate = " << msgDateoringal.t() << endl;                                   //½«ÏûÏ¢Êä³ö³öÀ´
+	cout<<"-----------------------------------------"<<endl;
+    cout <<"åŸæœ¬çš„ä¸­é—´åˆ—åƒç´ msgDate = "<< msgDateoringal.t() <<endl;                                   //å°†æ¶ˆæ¯è¾“å‡ºå‡ºæ¥
 
-	int backgroundThreshold = 20;                                                                        //ÉèÖÃ20ÎªãĞÖµ
-	Mat maskOfimgLED;
-	threshold(imageLED, maskOfimgLED, backgroundThreshold, 1, THRESH_BINARY);
-	// È¡ãĞÖµÒÔÉÏÖµµÄ¾ùÖµ£¬Âß¼­ÊÇÔËÓÃÑÚÄ££¬ÆäÖĞµÄÊıÖµÎª0»òÕß1£¬Îª1µÄµØ·½£¬¼ÆËã³öimageÖĞËùÓĞÔªËØµÄ¾ùÖµ£¬Îª0µÄµØ·½£¬²»¼ÆËã
+	int backgroundThreshold=20;                                                                        //è®¾ç½®20ä¸ºé˜ˆå€¼
+    Mat maskOfimgLED;
+    threshold(imageLED, maskOfimgLED, backgroundThreshold, 1, THRESH_BINARY);
+	
+    // å–é˜ˆå€¼ä»¥ä¸Šå€¼çš„å‡å€¼ï¼Œé€»è¾‘æ˜¯è¿ç”¨æ©æ¨¡ï¼Œå…¶ä¸­çš„æ•°å€¼ä¸º0æˆ–è€…1ï¼Œä¸º1çš„åœ°æ–¹ï¼Œè®¡ç®—å‡ºimageä¸­æ‰€æœ‰å…ƒç´ çš„å‡å€¼ï¼Œä¸º0çš„åœ°æ–¹ï¼Œä¸è®¡ç®—
+	
 
+    Mat msgDate = imageLED.col(0).t();
+	//cout<<"è¿™ä¸ªsize"<<msgDate.size();
+    int meanOfPxielRow;                                                                                
+    MatIterator_<uchar> it, end;
 
-	Mat msgDate = imageLED.col(0).t();
-	int meanOfPxielRow;                                                                                //.val[0]±íÊ¾µÚÒ»¸öÍ¨µÀµÄ¾ùÖµ
-	MatIterator_<uchar> it, end;
+    int RowOfimgLED = 0;
 
-	int RowOfimgLED = 0;
-
-	for (it = msgDate.begin<uchar>(), end = msgDate.end<uchar>(); it != end; it++) {
-		meanOfPxielRow = mean(imageLED.row(RowOfimgLED), maskOfimgLED.row(RowOfimgLED)).val[0];
-		RowOfimgLED++;
-		// cout << "Öµ = "<< meanOfPxielRow <<std::endl;
-		*it = meanOfPxielRow;
-	}
-	cout << "-----------------------------------------" << endl;
-	cout << "²åÖµÇ° = " << msgDate << endl;
-
-	msgDate = msgDate.t();
-
-	//---------------------------------------------ÏÂÃæ¶ÔĞÅºÅ×ö²åÖµ´¦Àí------------------------------------------//
-	Mat msgDate_resize;
-
-	// cout << "size:" << msgDate.size() << endl;
-	// cout << "row:" << msgDate.rows << endl;
-	// cout << "col:" << msgDate.cols << endl;
-
-	double chazhi = 3.9;                                                                                 //´óĞ¡±äÁË£¬¶ÔÓ¦²åÖµ±äµ«²ÉÑù²»±ä
-	resize(msgDate, msgDate_resize, Size(1, msgDate.rows * chazhi), INTER_CUBIC);
-
-	cout << "-----------------------------------------" << endl;
-	cout << "²åÖµºóĞÅºÅÊıÄ¿ = " << msgDate_resize.rows << endl;
-
-	cout << "-----------------------------------------" << endl;
-	cout << "²åÖµmsgDate_resize= " << msgDate_resize.t() << endl;                                        //½«²åÖµºóµÄÊä³ö³öÀ´,msgDate_resizeÕâ¸öÊÇ¶ÔÁĞ¾ØÕóÏßĞÔ²åÖµÖ®ºóµÄ½á¹û
-	//cout << "123456= "<< msgDate_resize.size() <<endl;
-
-
-	vector<Point> in_point;
-
-	//-------------¹ØÓÚin_pointµÄ¼¸µãËµÃ÷-----------------//
-	//1.in_pointÊÇÒ»¸övectorÈİÆ÷,ÀïÃæµÄÃ¿Ò»¸öÔªËØ¾ÍÊÇÒ»¸öPointÀàĞÍ
-	//2.Ã¿Ò»¸öPointÀàĞÍµÄÔªËØÊÇ(x, y), µ«×¢Òâ´ËÊ±²»±íÊ¾¶şÎ¬µÄ×ø±ê
-	//x-->±íÊ¾Õâ¸öµ¥ÁĞµÄÏñËØ¾ØÕóµÄÄ³Ò»¸öÏñËØ¶ÔÓ¦µÄĞĞÊı
-	//y-->±íÊ¾Õâ¸öµ¥ÁĞµÄÏñËØ¾ØÕóxÎ»ÖÃ´¦µÄÏñËØÖµ
-
-
-	for (int i = 0; i <= msgDate_resize.rows - 1; i++)                                                        //²åÖµÖ®ºóÒ»¹²ÊÇ179¸öÏñËØ
+    for( it = msgDate.begin<uchar>(), end = msgDate.end<uchar>(); it != end; it++) 
 	{
-		int y = msgDate_resize.at<uchar>(i, 0);                                                          //ÏñËØÖµ
+        meanOfPxielRow = mean(imageLED.row(RowOfimgLED), maskOfimgLED.row(RowOfimgLED)).val[0];  //.val[0]è¡¨ç¤ºç¬¬ä¸€ä¸ªé€šé“çš„å‡å€¼
+        RowOfimgLED ++;
+       // cout << "å€¼ = "<< meanOfPxielRow <<std::endl;
+        *it = meanOfPxielRow;                        //çœŸå®çš„åˆ—çŸ©é˜µæ˜¯å‡å€¼
+    }
+	cout<<"-----------------------------------------"<<endl;
+    cout << "æ’å€¼å‰ = "<< msgDate <<endl;
 
-		in_point.push_back(Point(i, y));
-	}
-	cout << "-----------------------------------------" << endl;
-	cout << "in_PointÈİÆ÷µÄ´óĞ¡:" << in_point.size() << endl;
+	msgDate=msgDate.t();
+    
+	//---------------------------------------------ä¸‹é¢å¯¹ä¿¡å·åšæ’å€¼å¤„ç†------------------------------------------//
+    Mat msgDate_resize;
+
+    cout << "size:" << msgDate.size() << endl;
+    cout << "row:" << msgDate.rows << endl;
+    cout << "col:" << msgDate.cols << endl;
+
+    double chazhi= 3.9;                                                                                
+    resize(msgDate,msgDate_resize,Size(1,msgDate.rows*chazhi),INTER_CUBIC);
+
+	cout<<"-----------------------------------------"<<endl;
+    cout << "æ’å€¼åä¿¡å·æ•°ç›® = "<< msgDate_resize.rows <<endl;
+
+	cout<<"-----------------------------------------"<<endl;
+    cout << "æ’å€¼msgDate_resize= "<< msgDate_resize.t() <<endl;                                        //å°†æ’å€¼åçš„è¾“å‡ºå‡ºæ¥,msgDate_resizeè¿™ä¸ªæ˜¯å¯¹åˆ—çŸ©é˜µçº¿æ€§æ’å€¼ä¹‹åçš„ç»“æœ
+    //cout << "123456= "<< msgDate_resize.size() <<endl;
+
+	
+	vector<Point> in_point ;
+
+	//-------------å…³äºin_pointçš„å‡ ç‚¹è¯´æ˜-----------------//
+	//1.in_pointæ˜¯ä¸€ä¸ªvectorå®¹å™¨,é‡Œé¢çš„æ¯ä¸€ä¸ªå…ƒç´ å°±æ˜¯ä¸€ä¸ªPointç±»å‹
+	//2.æ¯ä¸€ä¸ªPointç±»å‹çš„å…ƒç´ æ˜¯(x, y), ä½†æ³¨æ„æ­¤æ—¶ä¸è¡¨ç¤ºäºŒç»´çš„åæ ‡
+	//x-->è¡¨ç¤ºè¿™ä¸ªå•åˆ—çš„åƒç´ çŸ©é˜µçš„æŸä¸€ä¸ªåƒç´ å¯¹åº”çš„è¡Œæ•°
+	//y-->è¡¨ç¤ºè¿™ä¸ªå•åˆ—çš„åƒç´ çŸ©é˜µxä½ç½®å¤„çš„åƒç´ å€¼
 
 
-	//-----------------------------------------------ÏÂÃæÊµÏÖEVAËã·¨-----------------------------------------//
-	double minVal, maxVal;                                                                                //¶¨Òå×î´óÓë×îĞ¡µÄÏñËØ
-	int minIdx[2] = {}, maxIdx[2] = {};																      //×î´óÖµ¡¢×îĞ¡Öµ¶ÔÓ¦µÄ×ø±ê
+	for(int i=0; i<=msgDate_resize.rows - 1; i++)                                                        //æ’å€¼ä¹‹åä¸€å…±æ˜¯179ä¸ªåƒç´ 
+    {
+		int y = msgDate_resize.at<uchar>(i, 0);                                                          //åƒç´ å€¼
 
-	minMaxIdx(msgDate_resize, &minVal, &maxVal, minIdx, maxIdx);//Õâ¸ö¿ÉÒÔÇó×î´ó×îĞ¡ÖµÖµ
-
-	cout << "-----------------------------------------" << endl;
-	cout << "×î´óÖµ:   " << minVal << endl;
-	cout << "×îĞ¡Öµ:   " << maxVal << endl;
-	cout << "×îĞ¡Öµ¶ÔÓ¦µÄÕæÊµ¶şÎ¬×ø±ê:   (" << minIdx[1] << " ," << minIdx[0] << ")" << endl;                        //Òò´Ë,Ó³Éäµ½in_PointÖĞ,Î»ÖÃ×ø±êÎÒÃÇĞèÒªÑ¡È¡µÄÊÇIdx[0]
-	cout << "×î´óÖµ¶ÔÓ¦µÄÕæÊµ¶şÎ¬×ø±ê:   (" << maxIdx[1] << " ," << maxIdx[0] << ")" << endl;
+        in_point.push_back(Point(i,y));  	
+    }
+	cout<<"-----------------------------------------"<<endl;
+	cout<<"in_Pointå®¹å™¨çš„å¤§å°:"<<in_point.size()<<endl;  
 
 
-	cout << "-----------------------------------------" << endl;
-	cout << "×î´óÖµÓëin_PointµÄÓ³Éä¹ØÏµ:" << in_point[maxIdx[0]].y << endl;
+	//-----------------------------------------------ä¸‹é¢å®ç°EVAç®—æ³•-----------------------------------------//
+	double minVal, maxVal;                                                                                //å®šä¹‰æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+    int minIdx[2] = {}, maxIdx[2] = {};																      //æœ€å¤§å€¼ã€æœ€å°å€¼å¯¹åº”çš„åæ ‡
 
-	vector<Point> local_maxmin_threshold;																//£¨x,y£©x¾ÍÊÇµÚ¼¸¸öÏñËØ£¬y¾ÍÊÇ¶ÔÓ¦ÏñµÄãĞÖµ¡£ÀàËÆin_point
-	int Flag_minmax = 2;																			    //ÓÃÓÚÆæÅ¼ÅĞ¶Ï:Å¼Êı±íÊ¾ĞèÒªÕÒ¼«Ğ¡Öµ;ÆæÊı±íÊ¾ĞèÒªÕÒ¼«´óÖµ
+    minMaxIdx(msgDate_resize, &minVal, &maxVal, minIdx, maxIdx);
 
-	double maxminVal = maxVal;                                                                          //³õÊ¼»¯ÊÇ×î´óÖµ,¼´ÂÛÎÄÀïÃæµÄG_max  
-	int next_point = 0;
+	cout<<"-----------------------------------------"<<endl;
+	cout<<"æœ€å¤§å€¼:   "<<maxVal<<endl;
+	cout<<"æœ€å°å€¼:   "<<minVal<<endl;
+	cout<<"æœ€å°å€¼å¯¹åº”çš„çœŸå®äºŒç»´åæ ‡:   ("<<minIdx[1]<<" ,"<<minIdx[0]<<")"<<endl;                        //å› æ­¤,æ˜ å°„åˆ°in_Pointä¸­,ä½ç½®åæ ‡æˆ‘ä»¬éœ€è¦é€‰å–çš„æ˜¯Idx[0]
+	cout<<"æœ€å¤§å€¼å¯¹åº”çš„çœŸå®äºŒç»´åæ ‡:   ("<<maxIdx[1]<<" ,"<<maxIdx[0]<<")"<<endl;
 
-	for (int i = maxIdx[0]; i <= msgDate_resize.rows; i = i + next_point)                                 //ÏÈ´Ó×î´óÖµ¿ªÊ¼ÍùÊı×éµÄÓÒ±ßÕÒ¼«Öµ
-	{
-		//µÚÒ»±éÑ­»·µÄÊ±ºò,iÊÇ×î´óÖµËù¶ÔÓ¦µÄÎ»ÖÃmaxIdx[0]
-		double value = 0;                                                                                 //´æ·ÅÏÂÒ»¸ö¼«Öµ
-		double average_gobal_maxmin;																	//´æ·ÅãĞÖµ(Ã¿´Î¸üĞÂ)
 
-		if (Flag_minmax % 2 == 0)                                                                       //ÈôÎªÅ¼Êı,¾Í±íÊ¾ĞèÒªÍùÓÒ±ßÕÒµÄÊÇ¼«Ğ¡Öµ
-		{
-			double minVal1, maxVal1;															        //×î´óÓë×îĞ¡µÄÏñËØ
-			int minIdx1[2] = {}, maxIdx1[2] = {};														//¼«Öµ¶ÔÓ¦µÄ×ø±ê¡£ÓÉÓÚÊÇÏòÁ¿£¬ÒÔ0ÎªË÷Òı¾ÍºÃÁË
+	cout<<"-----------------------------------------"<<endl;
+	cout<<"æœ€å¤§å€¼ä¸in_Pointçš„æ˜ å°„å…³ç³»:"<<in_point[maxIdx[0]].y<<endl;
+   
+	vector<Point> local_maxmin_threshold;																//ï¼ˆx,yï¼‰xå°±æ˜¯ç¬¬å‡ ä¸ªåƒç´ ï¼Œyå°±æ˜¯å¯¹åº”åƒçš„é˜ˆå€¼ã€‚ç±»ä¼¼in_point
+	int Flag_minmax = 2;																			    //ç”¨äºå¥‡å¶åˆ¤æ–­:å¶æ•°è¡¨ç¤ºéœ€è¦æ‰¾æå°å€¼;å¥‡æ•°è¡¨ç¤ºéœ€è¦æ‰¾æå¤§å€¼
 
-			Mat maxmin_ROI = msgDate_resize(Rect(0, i + 9, 1, 9));                                        // Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
+	double maxminVal = maxVal;                                                                          //åˆå§‹åŒ–æ˜¯æœ€å¤§å€¼,å³è®ºæ–‡é‡Œé¢çš„G_max  
+    int next_point=0;
+
+	for (int i = maxIdx[0];i <= msgDate_resize.rows;i = i + next_point)                                 //å…ˆä»æœ€å¤§å€¼å¼€å§‹å¾€æ•°ç»„çš„å³è¾¹æ‰¾æå€¼
+    {
+		//ç¬¬ä¸€éå¾ªç¯çš„æ—¶å€™,iæ˜¯æœ€å¤§å€¼æ‰€å¯¹åº”çš„ä½ç½®maxIdx[0]
+		double value=0;                                                                                 //å­˜æ”¾ä¸‹ä¸€ä¸ªæå€¼
+		double average_gobal_maxmin;																	//å­˜æ”¾é˜ˆå€¼(æ¯æ¬¡æ›´æ–°)
+
+		if (Flag_minmax % 2 == 0)                                                                       //è‹¥ä¸ºå¶æ•°,å°±è¡¨ç¤ºéœ€è¦å¾€å³è¾¹æ‰¾çš„æ˜¯æå°å€¼
+        {
+            double minVal1, maxVal1;															        //æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+            int minIdx1[2] = {}, maxIdx1[2] = {};														//æå€¼å¯¹åº”çš„åæ ‡ã€‚ç”±äºæ˜¯å‘é‡ï¼Œä»¥0ä¸ºç´¢å¼•å°±å¥½äº†
+
+            Mat maxmin_ROI = msgDate_resize(Rect(0, i+9, 1, 9));                                        // Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
 			//cout<<"x"<<in_point[53].y;
-
-			//-----------------¹ØÓÚÎªÊ²Ã´ÊÇ i+9µÄ½â¶Á-------------//
-			//Ê×ÏÈÓÉÓÚÎÒÃÇÔÚ±¾´úÂëÖĞÉè¶¨µÄ²ÉÑùÂÊÊÇ9 pixels/bit,ÄÇÃ´¸ù¾İÂÛÎÄËùÃèÊöµÄ
-			//ÎªÁË·ÀÖ¹Îó°ÑÔëÉùËã½øÈ¥,ÄÇÃ´ÏÂÒ»´ÎÅĞ¶ÏµÄÏñËØ¾àÀëÉÏÒ»¸ö¼«ÖµÓ¦¸ÃÖÁÉÙ´óÓÚ
-			//Õâ¸ö×îĞ¡²ÉÑù¼ä¸ô,Ò²¾ÍÊÇ9
+			
+			//-----------------å…³äºä¸ºä»€ä¹ˆæ˜¯ i+9çš„è§£è¯»-------------//
+			//é¦–å…ˆç”±äºæˆ‘ä»¬åœ¨æœ¬ä»£ç ä¸­è®¾å®šçš„é‡‡æ ·ç‡æ˜¯9 pixels/bit,é‚£ä¹ˆæ ¹æ®è®ºæ–‡æ‰€æè¿°çš„
+			//ä¸ºäº†é˜²æ­¢è¯¯æŠŠå™ªå£°ç®—è¿›å»,é‚£ä¹ˆä¸‹ä¸€æ¬¡åˆ¤æ–­çš„åƒç´ è·ç¦»ä¸Šä¸€ä¸ªæå€¼åº”è¯¥è‡³å°‘å¤§äº
+			//è¿™ä¸ªæœ€å°é‡‡æ ·é—´éš”,ä¹Ÿå°±æ˜¯9
 			//---------------------------------------------------//
 
-			cout << "-----------------------------------------" << endl;
-			cout << "********************ÏÖÔÚÖ´ĞĞµÄÊÇ¼«Ğ¡ÖµµÄËÑË÷ (ÏòÓÒËÑË÷¹ı³Ì)************************" << endl;
-			cout << "ËÑË÷·¶Î§ÊÇ: " << maxmin_ROI;
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"********************ç°åœ¨æ‰§è¡Œçš„æ˜¯æå°å€¼çš„æœç´¢ (å‘å³æœç´¢è¿‡ç¨‹)************************"<<endl;
+			cout<<"æœç´¢èŒƒå›´æ˜¯: "<<maxmin_ROI;
 
-			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);                                //Ñ°ÕÒÕâ¸öÇøÓòÄÚµÄ×î´óÓë×îĞ¡Öµ
-			//NOTE: !! ÒòÎªÎÒÊÇÔÚmaxmin_ROIÀïÃæÈ¥ÕÒµÄ×îĞ¡Öµ£¬ËùÒÔÕâ¸ö×îĞ¡ÖµµÄ×ø±êÊÇÏà¶ÔÓÚmaxmin_ROIµÄ£¬¶ø²»ÊÇÏà¶ÔÓÚÔ­Í¼µÄ
+			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);                                //å¯»æ‰¾è¿™ä¸ªåŒºåŸŸå†…çš„æœ€å¤§ä¸æœ€å°å€¼
+			//NOTE: !! å› ä¸ºæˆ‘æ˜¯åœ¨maxmin_ROIé‡Œé¢å»æ‰¾çš„æœ€å°å€¼ï¼Œæ‰€ä»¥è¿™ä¸ªæœ€å°å€¼çš„åæ ‡æ˜¯ç›¸å¯¹äºmaxmin_ROIçš„ï¼Œè€Œä¸æ˜¯ç›¸å¯¹äºåŸå›¾çš„
 
-			//value=in_point[minIdx1[0]].y;                                                               //µ±Ç°ÖµÎª×îĞ¡Öµ£¬½«Æä¸³Óèvalue
+			//value=in_point[minIdx1[0]].y;                                                               //å½“å‰å€¼ä¸ºæœ€å°å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 
 			value = minVal1;
 
-			cout << "-----------------------------------------" << endl;
+			cout<<"-----------------------------------------"<<endl;
+			
+			cout<<"æˆ‘ä»¬æ‰¾åˆ°çš„æå°å€¼æ˜¯:"<<value<<endl;
+			cout<<"å…¶ç›¸å¯¹åæ ‡æ˜¯:"<<minIdx1[0]<<endl;
 
-			cout << "ÎÒÃÇÕÒµ½µÄ¼«Ğ¡ÖµÊÇ:" << value << endl;
-			cout << "ÆäÏà¶Ô×ø±êÊÇ:" << minIdx1[0] << endl;
+			average_gobal_maxmin=(maxminVal+value)/2;												    //è®¡ç®—åŒºåŸŸé˜ˆå€¼
 
-			average_gobal_maxmin = (maxminVal + value) / 2;												    //¼ÆËãÇøÓòãĞÖµ
+			next_point=minIdx1[0]+9;																	//minIdx1[0]ä¸ºï¼ˆi+9, i+2*9)è¿™ä¸ªåŒºåŸŸçš„æœ€å°å€¼åæ ‡ã€‚
 
-			next_point = minIdx1[0] + 9;																	//minIdx1[0]Îª£¨i+9, i+2*9)Õâ¸öÇøÓòµÄ×îĞ¡Öµ×ø±ê¡£
-
-			//----------------------------------------ÕâÒ»¸öforÑ­»·ÓÃÓÚÈ·¶¨ãĞÖµµÄ×÷ÓÃ·¶Î§--------------------------------------------------//
-			for (int j = i + 1, index = 0; j <= i + next_point; j++, index++)//¶Ô±ÈµÄÊ±ºòÊÇ´Ó£¨i+9,i+2*9£©Õâ¸öÇøÓòÕÒ£¬µ«Êµ¼ÊÉÏ£¬ÊÇÉÏÒ»¸ö¼«Öµµ½µ±Ç°µÄ¼«ÖµµÄÎ»ÖÃ
-			{
-				local_maxmin_threshold.push_back(Point(j, average_gobal_maxmin));
-				//cout<<"´ËÊ±µÄãĞÖµÎª:"<<local_maxmin_threshold.at(index)<<endl;
-				//cout<<"ãĞÖµÊı×éµÄ´óĞ¡Îª"<<local_maxmin_threshold.size()<<endl;
-			}
+			//----------------------------------------è¿™ä¸€ä¸ªforå¾ªç¯ç”¨äºç¡®å®šé˜ˆå€¼çš„ä½œç”¨èŒƒå›´--------------------------------------------------//
+			for (int j=i+1, index= 0;j<=i+next_point;j++, index++)//å¯¹æ¯”çš„æ—¶å€™æ˜¯ä»ï¼ˆi+9,i+2*9ï¼‰è¿™ä¸ªåŒºåŸŸæ‰¾ï¼Œä½†å®é™…ä¸Šï¼Œæ˜¯ä¸Šä¸€ä¸ªæå€¼åˆ°å½“å‰çš„æå€¼çš„ä½ç½®
+            {
+                local_maxmin_threshold.push_back(Point(j,average_gobal_maxmin));
+				//cout<<"æ­¤æ—¶çš„é˜ˆå€¼ä¸º:"<<local_maxmin_threshold.at(index)<<endl;
+				//cout<<"é˜ˆå€¼æ•°ç»„çš„å¤§å°ä¸º"<<local_maxmin_threshold.size()<<endl;
+            }
 			Flag_minmax++;
-			maxminVal = value;
+
+			maxminVal=value;
 		}
-		else                                                                                            //ÈôÎªÆæÊı¾ÍÊÇÇó¼«´óÖµÁË
-		{
-			double minVal1, maxVal1;																	//×î´óÓë×îĞ¡µÄÏñËØ
-			int minIdx1[2] = {}, maxIdx1[2] = {};														//¶ÔÓ¦µÄ×ø±ê¡£
+		else                                                                                            //è‹¥ä¸ºå¥‡æ•°å°±æ˜¯æ±‚æå¤§å€¼äº†
+        {
+            double minVal1, maxVal1;																	//æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+            int minIdx1[2] = {}, maxIdx1[2] = {};														//å¯¹åº”çš„åæ ‡ã€‚
 
-			Mat maxmin_ROI = msgDate_resize(Rect(0, i + 9, 1, 9));											// Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
+            Mat maxmin_ROI=msgDate_resize(Rect(0, i+9, 1, 9));											// Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
 
-			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);								//Ñ°ÕÒÕâ¸öÇøÓòÄÚµÄ×î´óÓë×îĞ¡Öµ
-			cout << "-----------------------------------------" << endl;
-			cout << "************************ÏÖÔÚÖ´ĞĞµÄÊÇ¼«´óÖµµÄËÑË÷ (ÏòÓÒËÑË÷¹ı³Ì)*****************************" << endl;
-			cout << "ËÑË÷·¶Î§ÊÇ: " << maxmin_ROI << endl;
-			//value=in_point[maxIdx1[0]].y;																//µ±Ç°ÖµÎª×î´óÖµ£¬½«Æä¸³Óèvalue
+            minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);								//å¯»æ‰¾è¿™ä¸ªåŒºåŸŸå†…çš„æœ€å¤§ä¸æœ€å°å€¼
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"************************ç°åœ¨æ‰§è¡Œçš„æ˜¯æå¤§å€¼çš„æœç´¢ (å‘å³æœç´¢è¿‡ç¨‹)*****************************"<<endl;
+			cout<<"æœç´¢èŒƒå›´æ˜¯: "<<maxmin_ROI<<endl;
+            //value=in_point[maxIdx1[0]].y;																//å½“å‰å€¼ä¸ºæœ€å¤§å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 			value = maxVal1;
 
+			
+			cout<<"-----------------------------------------"<<endl;
+			
+			//cout<<"å½“å‰çš„æå°å€¼ä¸º:"<<maxminVal<<endl;
+			cout<<"æˆ‘ä»¬æ‰¾åˆ°çš„çš„æå¤§å€¼ä¸º:"<<value<<endl;
+			cout<<"ç›¸å¯¹åæ ‡æ˜¯:"<<maxIdx1[0]<<endl;
 
-			cout << "-----------------------------------------" << endl;
+            average_gobal_maxmin=(maxminVal+value)/2;
 
-			//cout<<"µ±Ç°µÄ¼«Ğ¡ÖµÎª:"<<maxminVal<<endl;
-			cout << "ÎÒÃÇÕÒµ½µÄµÄ¼«´óÖµÎª:" << value << endl;
-			cout << "Ïà¶Ô×ø±êÊÇ:" << maxIdx1[0] << endl;
-
-			average_gobal_maxmin = (maxminVal + value) / 2;
-
-			next_point = maxIdx1[0] + 9;																	//minIdx1[0]Îª£¨i+9, i+2*9)Õâ¸öÇøÓòµÄ×î´óÖµ×ø±ê¡£
-
-			//cout<<"Ä¿Ç°µÄÎ»ÖÃ:"<<next_point;
+            next_point=maxIdx1[0]+9;																	//minIdx1[0]ä¸ºï¼ˆi+9, i+2*9)è¿™ä¸ªåŒºåŸŸçš„æœ€å¤§å€¼åæ ‡ã€‚
+			
+			//cout<<"ç›®å‰çš„ä½ç½®:"<<next_point;
 			/*
 			//----------------------------//
 			cout<<"-----------------------------------------"<<endl;
-			cout<<"ÀíÂÛÉÏÕâ¸öROIµÄ×î´óÖµÊÇ:"<<maxVal1<<endl;
-			cout<<"ÀíÂÛÉÏÕâ¸öROI×îĞ¡ÖµµÄË÷ÒıÓ¦¸ÃÊÇ:"<<maxIdx1[0]<<endl;
-			cout<<"ÀíÂÛÉÏÕâ¸öË÷Òı¶ÔÓ¦µÄin_pointµÄ×ø±êÊÇ:"<<in_point[maxIdx[0]+ next_point]<<endl;
-			cout<<"Êµ¼ÊÉÏÎÒÃÇÕÒµ½µÄ×î´óÖµÊÇ:"<<value<<endl;
+			cout<<"ç†è®ºä¸Šè¿™ä¸ªROIçš„æœ€å¤§å€¼æ˜¯:"<<maxVal1<<endl;
+			cout<<"ç†è®ºä¸Šè¿™ä¸ªROIæœ€å°å€¼çš„ç´¢å¼•åº”è¯¥æ˜¯:"<<maxIdx1[0]<<endl;
+			cout<<"ç†è®ºä¸Šè¿™ä¸ªç´¢å¼•å¯¹åº”çš„in_pointçš„åæ ‡æ˜¯:"<<in_point[maxIdx[0]+ next_point]<<endl;
+			cout<<"å®é™…ä¸Šæˆ‘ä»¬æ‰¾åˆ°çš„æœ€å¤§å€¼æ˜¯:"<<value<<endl;
 			*/
+			
 
+            for (int j=i;j<=i+next_point;j++)                                                           //å¯¹æ¯”çš„æ—¶å€™æ˜¯ä»ï¼ˆi+9,i+2*9ï¼‰è¿™ä¸ªåŒºåŸŸæ‰¾ï¼Œä½†å®é™…ä¸Šï¼Œæ˜¯ä¸Šä¸€ä¸ªæå€¼åˆ°å½“å‰çš„æå€¼çš„ä½ç½®
+            {
+                local_maxmin_threshold.push_back(Point(j,average_gobal_maxmin));
+            }
 
-			for (int j = i; j <= i + next_point; j++)                                                           //¶Ô±ÈµÄÊ±ºòÊÇ´Ó£¨i+9,i+2*9£©Õâ¸öÇøÓòÕÒ£¬µ«Êµ¼ÊÉÏ£¬ÊÇÉÏÒ»¸ö¼«Öµµ½µ±Ç°µÄ¼«ÖµµÄÎ»ÖÃ
-			{
-				local_maxmin_threshold.push_back(Point(j, average_gobal_maxmin));
-			}
-
-			Flag_minmax++;																			   //ÓÃÓÚÆæÅ¼ÅĞ¶Ï£¬´ËÑ­»·ÊÇÆæÊı²Å½øĞĞ£¬¼ÓÁËºó±ä³ÉÅ¼Êı£¬½øÈëÇó¼«Ğ¡ÖµµÄÑ­»·
-			// cout<<"¼ÆËã¼«Ğ¡Öµ"<<endl;
-			// cout<<"¶ÔÓ¦µÄ¼«´óÖµ"<<maxminVal<<endl;
-			// cout<<"value="<<value<<endl;
-			maxminVal = value;//ÇóÍê¼«´óÖµ£¬½«µ±Ç°µÄ¼«´óÖµ¸³Öµ£¬ÓÃÓÚÇóÏÂÒ»¸ö¼«Ğ¡Öµ
+            Flag_minmax++;																			   //ç”¨äºå¥‡å¶åˆ¤æ–­ï¼Œæ­¤å¾ªç¯æ˜¯å¥‡æ•°æ‰è¿›è¡Œï¼ŒåŠ äº†åå˜æˆå¶æ•°ï¼Œè¿›å…¥æ±‚æå°å€¼çš„å¾ªç¯
+            // cout<<"è®¡ç®—æå°å€¼"<<endl;
+            // cout<<"å¯¹åº”çš„æå¤§å€¼"<<maxminVal<<endl;
+            // cout<<"value="<<value<<endl;
+            maxminVal=value;//æ±‚å®Œæå¤§å€¼ï¼Œå°†å½“å‰çš„æå¤§å€¼èµ‹å€¼ï¼Œç”¨äºæ±‚ä¸‹ä¸€ä¸ªæå°å€¼
 		}
-		if (i + next_point + 2 * 9 >= msgDate_resize.rows)                                                     //µ±Ç°µÄµãÊÇ·ñÒÑ¾­²»Ö§³ÖÏÂÒ»´ÎÅĞ¾ö£¬Ò»ÅĞ¾ö¾Í»áÒç³ö.ÄÇÃ´¾Í½«µ±Ç°µÄãĞÖµ¸³ÉÏ
-		{
-			double minVal1, maxVal1;																   //×î´óÓë×îĞ¡µÄÏñËØ
-			int minIdx1[2] = {}, maxIdx1[2] = {};	                                                   //¶ÔÓ¦µÄ×ø±ê
+		if (i+next_point+2*9>=msgDate_resize.rows)                                                     //å½“å‰çš„ç‚¹æ˜¯å¦å·²ç»ä¸æ”¯æŒä¸‹ä¸€æ¬¡åˆ¤å†³ï¼Œä¸€åˆ¤å†³å°±ä¼šæº¢å‡º.é‚£ä¹ˆå°±å°†å½“å‰çš„é˜ˆå€¼èµ‹ä¸Š
+        {
+            double minVal1, maxVal1;																   //æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+            int minIdx1[2] = {}, maxIdx1[2] = {};	                                                   //å¯¹åº”çš„åæ ‡
 
-			Mat maxmin_ROI = msgDate_resize(Rect(0, i + 9, 1, msgDate_resize.rows - (i + 9)));                 //´ÓÊ£ÏÂµÄÎ»ÖÃÀïÃæÕÒÒ»ÏÂ¼«Öµ
-
-			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);							   //Ñ°ÕÒÕâ¸öÇøÓòÄÚµÄ×î´óÓë×îĞ¡Öµ
-			if (Flag_minmax % 2 == 0)																   //Å¼ÊıÔò¼«Ğ¡
-			{
-				// value=in_point[minIdx1[0]].y;														   //µ±Ç°ÖµÎª×îĞ¡Öµ£¬½«Æä¸³Óèvalue
+            Mat maxmin_ROI=msgDate_resize(Rect(0, i+9, 1, msgDate_resize.rows-(i+9)));                 //ä»å‰©ä¸‹çš„ä½ç½®é‡Œé¢æ‰¾ä¸€ä¸‹æå€¼
+			
+            minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);							   //å¯»æ‰¾è¿™ä¸ªåŒºåŸŸå†…çš„æœ€å¤§ä¸æœ€å°å€¼
+            if (Flag_minmax % 2 == 0)																   //å¶æ•°åˆ™æå°
+            {
+               // value=in_point[minIdx1[0]].y;														   //å½“å‰å€¼ä¸ºæœ€å°å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 				value = minVal1;
-			}
-			else
-			{
-				//value=in_point[maxIdx1[0]].y;														   //µ±Ç°ÖµÎª×î´óÖµ£¬½«Æä¸³Óèvalue
+            }
+            else
+            {
+                //value=in_point[maxIdx1[0]].y;														   //å½“å‰å€¼ä¸ºæœ€å¤§å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 				value = maxVal1;
-			}
-			average_gobal_maxmin = (maxminVal + value) / 2;
-			for (int j = i; j <= msgDate_resize.rows; j++)
-			{
-				local_maxmin_threshold.push_back(Point(j, average_gobal_maxmin));
-			}
-			break;//Ìø³öÑ­»·
-		}
+            }
+            average_gobal_maxmin=(maxminVal+value)/2;            
+            for (int j=i;j<=msgDate_resize.rows;j++)
+            {
+                local_maxmin_threshold.push_back(Point(j,average_gobal_maxmin));
+            }
+            break;//è·³å‡ºå¾ªç¯
+        }
 	}
-	//×¢ÒâÉÏÃæÕâ¸ö´óµÄforÑ­»·Ö»ÊÇÍê³ÉÁËÔÚ×î´óÖµÒÔÏÂµÄËÑË÷£¬×î´óÖµÒÔÉÏµÄËÑË÷»¹ĞèÒª¶îÍâµÄÒ»¸öÑ­»·
+	//æ³¨æ„ä¸Šé¢è¿™ä¸ªå¤§çš„forå¾ªç¯åªæ˜¯å®Œæˆäº†åœ¨æœ€å¤§å€¼ä»¥ä¸‹çš„æœç´¢ï¼Œæœ€å¤§å€¼ä»¥ä¸Šçš„æœç´¢è¿˜éœ€è¦é¢å¤–çš„ä¸€ä¸ªå¾ªç¯
 
-	Flag_minmax = 2;																					  //ÓÃÓÚÆæÅ¼ÅĞ¶Ï
-	maxminVal = maxVal;																				  //³õÊ¼»¯ÊÇ×î´óÖµ
-	next_point = 0;
+	Flag_minmax=2;																					  //ç”¨äºå¥‡å¶åˆ¤æ–­
+    maxminVal=maxVal;																				  //åˆå§‹åŒ–æ˜¯æœ€å¤§å€¼
+    next_point=0;
+    
+	//---------------------------ç°åœ¨æ˜¯ä»¥æœ€å¤§å€¼ä¸ºç•Œé™å‘å·¦æœç´¢---------------------------//
+    for (int i=maxIdx[0];i>=0;i=i-next_point)                                                         //ç”±äºæ˜¯æå€¼ç‚¹ä¸Šä¸€ä¸ªå¼€å§‹å¯»æ‰¾
+    {
+        double value=0;																				  //å­˜æ”¾ä¸‹ä¸€ä¸ªæå€¼
+        double average_gobal_maxmin;																  //å­˜æ”¾é˜ˆå€¼(æ¯æ¬¡æ›´æ–°)
 
-	//---------------------------ÏÖÔÚÊÇÒÔ×î´óÖµÎª½çÏŞÏò×óËÑË÷---------------------------//
-	for (int i = maxIdx[0]; i >= 0; i = i - next_point)                                                         //ÓÉÓÚÊÇ¼«ÖµµãÉÏÒ»¸ö¿ªÊ¼Ñ°ÕÒ
-	{
-		double value = 0;																				  //´æ·ÅÏÂÒ»¸ö¼«Öµ
-		double average_gobal_maxmin;																  //´æ·ÅãĞÖµ(Ã¿´Î¸üĞÂ)
+        // cout<<"i="<<i<<endl;
+        // cout<<"next_point="<<next_point<<endl;
+        // cout<<"Flag_minmax="<<Flag_minmax<<endl;
 
-		// cout<<"i="<<i<<endl;
-		// cout<<"next_point="<<next_point<<endl;
-		// cout<<"Flag_minmax="<<Flag_minmax<<endl;
+        if (Flag_minmax % 2 == 0)																	  //è‹¥ä¸ºå¶æ•°å°±å¯»æ‰¾æå°å€¼
+        {
+            double minVal1, maxVal1;															      //æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+            int minIdx1[2] = {}, maxIdx1[2] = {};	                                                  //å¯¹åº”çš„åæ ‡
 
-		if (Flag_minmax % 2 == 0)																	  //ÈôÎªÅ¼Êı¾ÍÑ°ÕÒ¼«Ğ¡Öµ
-		{
-			double minVal1, maxVal1;															      //×î´óÓë×îĞ¡µÄÏñËØ
-			int minIdx1[2] = {}, maxIdx1[2] = {};	                                                  //¶ÔÓ¦µÄ×ø±ê
+            Mat maxmin_ROI=msgDate_resize(Rect(0, i-2*9, 1, 9));								      // Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
+            minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);							  //å¯»æ‰¾è¿™ä¸ªåŒºåŸŸå†…çš„æœ€å¤§ä¸æœ€å°å€¼
 
-			Mat maxmin_ROI = msgDate_resize(Rect(0, i - 2 * 9, 1, 9));								      // Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
-			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);							  //Ñ°ÕÒÕâ¸öÇøÓòÄÚµÄ×î´óÓë×îĞ¡Öµ
-
-			cout << "-----------------------------------------" << endl;
-			cout << "************************ÏÖÔÚÖ´ĞĞµÄÊÇ¼«Ğ¡ÖµµÄËÑË÷ (Ïò×óËÑË÷¹ı³Ì)*****************************" << endl;
-			cout << "-----------------------------------------" << endl;
-			cout << "ËÑË÷·¶Î§ÊÇ: " << maxmin_ROI << endl;
-			// value=in_point[minIdx1[0]].y;															  //µ±Ç°ÖµÎª×îĞ¡Öµ£¬½«Æä¸³Óèvalue
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"************************ç°åœ¨æ‰§è¡Œçš„æ˜¯æå°å€¼çš„æœç´¢ (å‘å·¦æœç´¢è¿‡ç¨‹)*****************************"<<endl;
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"æœç´¢èŒƒå›´æ˜¯: "<<maxmin_ROI<<endl;
+           // value=in_point[minIdx1[0]].y;															  //å½“å‰å€¼ä¸ºæœ€å°å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 			value = minVal1;
 
-			cout << "-----------------------------------------" << endl;
-			cout << "ÎÒÃÇÕÒµ½µÄ¼«Ğ¡ÖµÊÇ:" << value << endl;
-			cout << "Ïà¶ÔÎ»ÖÃÊÇ:" << minIdx1[0] << endl;
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"æˆ‘ä»¬æ‰¾åˆ°çš„æå°å€¼æ˜¯:"<<value<<endl;
+			cout<<"ç›¸å¯¹ä½ç½®æ˜¯:"<<minIdx1[0]<<endl;
 
-			average_gobal_maxmin = (maxminVal + value) / 2;
+            average_gobal_maxmin=(maxminVal+value)/2;
 
-			next_point = 9 - minIdx1[0];																  //minIdx1[0]Îª£¨i+9, i+2*9)Õâ¸öÇøÓòµÄ×îĞ¡Öµ×ø±ê¡£
+            next_point=9-minIdx1[0];																  //minIdx1[0]ä¸ºï¼ˆi+9, i+2*9)è¿™ä¸ªåŒºåŸŸçš„æœ€å°å€¼åæ ‡ã€‚
 
-			//-----------------È·¶¨ãĞÖµµÄ×÷ÓÃ·¶Î§----------------//
-			for (int j = i; j >= i - next_point; j--)//¶Ô±ÈµÄÊ±ºòÊÇ´Ó£¨i+9,i+2*9£©Õâ¸öÇøÓòÕÒ£¬µ«Êµ¼ÊÉÏ£¬ÊÇÉÏÒ»¸ö¼«Öµµ½µ±Ç°µÄ¼«ÖµµÄÎ»ÖÃ
-			{
-				local_maxmin_threshold.insert(local_maxmin_threshold.begin(), Point(j, average_gobal_maxmin));
-			}
-			Flag_minmax++;																			 //ÓÃÓÚÆæÅ¼ÅĞ¶Ï£¬´ËÑ­»·ÊÇÅ¼Êı²Å½øĞĞ£¬¼ÓÁËºó±ä³ÉÆæÊı£¬½øÈëÇó¼«´óÖµµÄÑ­»·
-			maxminVal = value;																		 //ÇóÍê¼«Ğ¡Öµ£¬½«µ±Ç°µÄ¼«Ğ¡Öµ¸³Öµ£¬ÓÃÓÚÇóÏÂÒ»¸öãĞÖµ
-		}
-		else
-		{
-			double minVal1, maxVal1;																//×î´óÓë×îĞ¡µÄÏñËØ
-			int minIdx1[2] = {}, maxIdx1[2] = {};
+			//-----------------ç¡®å®šé˜ˆå€¼çš„ä½œç”¨èŒƒå›´----------------//
+            for (int j=i;j>=i-next_point;j--)//å¯¹æ¯”çš„æ—¶å€™æ˜¯ä»ï¼ˆi+9,i+2*9ï¼‰è¿™ä¸ªåŒºåŸŸæ‰¾ï¼Œä½†å®é™…ä¸Šï¼Œæ˜¯ä¸Šä¸€ä¸ªæå€¼åˆ°å½“å‰çš„æå€¼çš„ä½ç½®
+            {
+                local_maxmin_threshold.insert(local_maxmin_threshold.begin(),Point(j,average_gobal_maxmin));
+            }
+            Flag_minmax++;																			 //ç”¨äºå¥‡å¶åˆ¤æ–­ï¼Œæ­¤å¾ªç¯æ˜¯å¶æ•°æ‰è¿›è¡Œï¼ŒåŠ äº†åå˜æˆå¥‡æ•°ï¼Œè¿›å…¥æ±‚æå¤§å€¼çš„å¾ªç¯
+            maxminVal=value;																		 //æ±‚å®Œæå°å€¼ï¼Œå°†å½“å‰çš„æå°å€¼èµ‹å€¼ï¼Œç”¨äºæ±‚ä¸‹ä¸€ä¸ªé˜ˆå€¼
+        }
+        else
+        {
+            double minVal1, maxVal1;																//æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+            int minIdx1[2] = {}, maxIdx1[2] = {};	
 
-			Mat maxmin_ROI = msgDate_resize(Rect(0, i - 2 * 9, 1, 9));
-			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);					        //Ñ°ÕÒÕâ¸öÇøÓòÄÚµÄ×î´óÓë×îĞ¡Öµ
+            Mat maxmin_ROI=msgDate_resize(Rect(0, i-2*9, 1, 9));
+            minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);					        //å¯»æ‰¾è¿™ä¸ªåŒºåŸŸå†…çš„æœ€å¤§ä¸æœ€å°å€¼
 
-			cout << "-----------------------------------------" << endl;
-			cout << "************************ÏÖÔÚÖ´ĞĞµÄÊÇ¼«´óÖµµÄËÑË÷ (Ïò×óËÑË÷¹ı³Ì)*****************************" << endl;
-			cout << "-----------------------------------------" << endl;
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"************************ç°åœ¨æ‰§è¡Œçš„æ˜¯æå¤§å€¼çš„æœç´¢ (å‘å·¦æœç´¢è¿‡ç¨‹)*****************************"<<endl;
+			cout<<"-----------------------------------------"<<endl;
 
-			//value=in_point[maxIdx1[0]].y;															//µ±Ç°ÖµÎª×î´óÖµ£¬½«Æä¸³Óèvalue
+            //value=in_point[maxIdx1[0]].y;															//å½“å‰å€¼ä¸ºæœ€å¤§å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 			value = maxVal1;
 
-			cout << "ËÑË÷·¶Î§ÊÇ: " << maxmin_ROI << endl;
-			cout << "-----------------------------------------" << endl;
-			cout << "ÎÒÃÇÕÒµ½µÄ¼«´óÖµÊÇ:" << value << endl;
-			cout << "Ïà¶ÔÎ»ÖÃÊÇ:" << maxIdx1[0] << endl;
+			cout<<"æœç´¢èŒƒå›´æ˜¯: "<<maxmin_ROI<<endl;
+			cout<<"-----------------------------------------"<<endl;
+			cout<<"æˆ‘ä»¬æ‰¾åˆ°çš„æå¤§å€¼æ˜¯:"<<value<<endl;
+			cout<<"ç›¸å¯¹ä½ç½®æ˜¯:"<<maxIdx1[0]<<endl;
 
-			average_gobal_maxmin = (maxminVal + value) / 2;
+            average_gobal_maxmin =(maxminVal+value)/2;
 
-			next_point = 9 - maxIdx1[0];														        //minIdx1[0]Îª£¨i+9, i+2*9)Õâ¸öÇøÓòµÄ×î´óÖµ×ø±ê¡£
+            next_point=9-maxIdx1[0];														        //minIdx1[0]ä¸ºï¼ˆi+9, i+2*9)è¿™ä¸ªåŒºåŸŸçš„æœ€å¤§å€¼åæ ‡ã€‚
 
-			//-----------------È·¶¨ãĞÖµµÄ×÷ÓÃ·¶Î§----------------//
-			for (int j = i; j >= i - next_point; j--)//¶Ô±ÈµÄÊ±ºòÊÇ´Ó£¨i+9,i+2*9£©Õâ¸öÇøÓòÕÒ£¬µ«Êµ¼ÊÉÏ£¬ÊÇÉÏÒ»¸ö¼«Öµµ½µ±Ç°µÄ¼«ÖµµÄÎ»ÖÃ
-			{
-				local_maxmin_threshold.insert(local_maxmin_threshold.begin(), Point(j, average_gobal_maxmin));
-			}
+			//-----------------ç¡®å®šé˜ˆå€¼çš„ä½œç”¨èŒƒå›´----------------//
+            for (int j=i;j>=i-next_point;j--)//å¯¹æ¯”çš„æ—¶å€™æ˜¯ä»ï¼ˆi+9,i+2*9ï¼‰è¿™ä¸ªåŒºåŸŸæ‰¾ï¼Œä½†å®é™…ä¸Šï¼Œæ˜¯ä¸Šä¸€ä¸ªæå€¼åˆ°å½“å‰çš„æå€¼çš„ä½ç½®
+            {
+                local_maxmin_threshold.insert(local_maxmin_threshold.begin(),Point(j,average_gobal_maxmin));
+            }
 
-			Flag_minmax++;
-			maxminVal = value;																		//ÇóÍê¼«´óÖµ£¬½«µ±Ç°µÄ¼«´óÖµ¸³Öµ£¬ÓÃÓÚÇóÏÂÒ»¸öãĞÖµ
-		}
-		//-------------×îºóµÄÇé¿ö------------//			
-		if (i - next_point - 2 * 9 <= 0)																	//µ±Ç°µÄµãÊÇ·ñÒÑ¾­²»Ö§³ÖÏÂÒ»´ÎÅĞ¾ö£¬Ò»ÅĞ¾ö¾Í»áÒç³ö.ÄÇÃ´¾Í½«µ±Ç°µÄãĞÖµ¸³ÉÏ
-		{
-			double minVal1, maxVal1;												                //×î´óÓë×îĞ¡µÄÏñËØ
-			int minIdx1[2] = {}, maxIdx1[2] = {};
+            Flag_minmax++;
+            maxminVal=value;																		//æ±‚å®Œæå¤§å€¼ï¼Œå°†å½“å‰çš„æå¤§å€¼èµ‹å€¼ï¼Œç”¨äºæ±‚ä¸‹ä¸€ä¸ªé˜ˆå€¼
+        }
+		//-------------æœ€åçš„æƒ…å†µ------------//			
+        if (i-next_point-2*9<=0)																	//å½“å‰çš„ç‚¹æ˜¯å¦å·²ç»ä¸æ”¯æŒä¸‹ä¸€æ¬¡åˆ¤å†³ï¼Œä¸€åˆ¤å†³å°±ä¼šæº¢å‡º.é‚£ä¹ˆå°±å°†å½“å‰çš„é˜ˆå€¼èµ‹ä¸Š
+        {
+            double minVal1, maxVal1;												                //æœ€å¤§ä¸æœ€å°çš„åƒç´ 
+            int minIdx1[2] = {}, maxIdx1[2] = {};	
 
-			Mat maxmin_ROI = msgDate_resize(Rect(0, 0, 1, 18));
-			minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);							//Ñ°ÕÒÕâ¸öÇøÓòÄÚµÄ×î´óÓë×îĞ¡Öµ
+            Mat maxmin_ROI=msgDate_resize(Rect(0, 0, 1, 18));
+            minMaxIdx(maxmin_ROI, &minVal1, &maxVal1, minIdx1, maxIdx1);							//å¯»æ‰¾è¿™ä¸ªåŒºåŸŸå†…çš„æœ€å¤§ä¸æœ€å°å€¼
 
-			if (Flag_minmax % 2 == 0)																//Å¼ÊıÔò¼«Ğ¡
-			{
-				//value=in_point[minIdx1[0]].y;														//µ±Ç°ÖµÎª×îĞ¡Öµ£¬½«Æä¸³Óèvalue
+            if (Flag_minmax % 2 == 0)																//å¶æ•°åˆ™æå°
+            {
+                //value=in_point[minIdx1[0]].y;														//å½“å‰å€¼ä¸ºæœ€å°å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 				value = minVal1;
-			}
-			else
-			{
-				value = in_point[maxIdx1[0]].y;														//µ±Ç°ÖµÎª×îĞ¡Öµ£¬½«Æä¸³Óèvalue
+            }
+            else
+            {
+                value=in_point[maxIdx1[0]].y;														//å½“å‰å€¼ä¸ºæœ€å°å€¼ï¼Œå°†å…¶èµ‹äºˆvalue
 				value = maxVal1;
-			}
-			average_gobal_maxmin = (maxminVal + value) / 2;
-			for (int j = i; j >= 0; j--)
-			{
-				local_maxmin_threshold.insert(local_maxmin_threshold.begin(), Point(j, average_gobal_maxmin));
-			}
-			break;//Ìø³öÑ­»·
-		}
-	}
-	cout << "--------------------------------------------------------------" << endl;
-	cout << "EVAµÄãĞÖµ½á¹û" << local_maxmin_threshold << endl;
+            }
+            average_gobal_maxmin=(maxminVal+value)/2;            
+            for (int j=i;j>=0;j--)
+            {
+                local_maxmin_threshold.insert(local_maxmin_threshold.begin(),Point(j,average_gobal_maxmin));
+            }
+            break;//è·³å‡ºå¾ªç¯
+        }
+    }  
+	cout<<"--------------------------------------------------------------"<<endl;
+    cout<<"EVAçš„é˜ˆå€¼ç»“æœ"<<local_maxmin_threshold<<endl;
 
 
-	int sample_point = 0;																					//²ÉÑùµã£¨0¡«9£©
-	int sample_interval = 9;																				//²ÉÑù¼ä¸ô
 
+	/////////////////////////////////////////////////////
+	int sample_point=0;																					//é‡‡æ ·ç‚¹ï¼ˆ0ï½9ï¼‰
+    int sample_interval=9;																				//é‡‡æ ·é—´éš”
+	//cout<<"------------é˜ˆå€¼é•¿åº¦"<<local_maxmin_threshold.size()<<endl;
 
-sample_again: std::cout << "******sample_again   " << sample_point << "´Î" << endl;
+	sample_again: std::cout << "******sample_again   "<<sample_point<<"   æ¬¡"<<std::endl;
+	//cout<<msgDate_resize.rows;
 
-	vector<int> BitVector;
+    vector<int> BitVector;
 	vector<int> local_maxmin_;
 
 	double pxielFlag;
-	for (int i = sample_point; i <= msgDate_resize.rows; i = i + sample_interval)
-	{
-		BitVector.push_back(msgDate_resize.at<uchar>(i));                                               //Êı¾İ²ÉÑù--
-		local_maxmin_.push_back(local_maxmin_threshold[i].y);                                           //EVAãĞÖµ²ÉÑù¾Ö²¿×ÔÊÊÓ¦ãĞÖµ²ÉÑù	
+    for(int i=sample_point;i<=msgDate_resize.rows;i=i+sample_interval)
+    {
+        BitVector.push_back(msgDate_resize.at<uchar>(i));                                               //æ•°æ®é‡‡æ ·--
+		local_maxmin_.push_back(local_maxmin_threshold[i].y);                                           //EVAé˜ˆå€¼é‡‡æ ·å±€éƒ¨è‡ªé€‚åº”é˜ˆå€¼é‡‡æ ·	
 	}
-
-	cout << "¶ÔÊı¾İ½øĞĞ²ÉÑùµÄ½á¹ûÊÇ: " << Mat(BitVector, true).t() << endl;								//½«²ÉÑùºóµÄÊä³ö³öÀ´
-	cout << "¶ÔEVAãĞÖµ½øĞĞ²ÉÑùµÄ½á¹ûÊÇ:" << Mat(local_maxmin_, true).t() << endl;
+	
+	cout << "å¯¹æ•°æ®è¿›è¡Œé‡‡æ ·çš„ç»“æœæ˜¯: "<< Mat(BitVector, true).t()<<endl;								//å°†é‡‡æ ·åçš„è¾“å‡ºå‡ºæ¥
+	cout << "å¯¹EVAé˜ˆå€¼è¿›è¡Œé‡‡æ ·çš„ç»“æœæ˜¯:"<< Mat(local_maxmin_, true).t()<<endl;
 
 	vector<int> BitVector_local_maxmin_ = BitVector;
-	cout << BitVector.size();
-	for (int i = 0; i != BitVector.size(); i++)
-	{
+	cout<<BitVector.size();
+    for (int i=0; i!=BitVector.size(); i++)
+    {
+		
+        if (BitVector_local_maxmin_[i]<=local_maxmin_[i])
+        {
+            BitVector_local_maxmin_[i]=0;
+        }
+        else
+        {
+            BitVector_local_maxmin_[i]=1;
+        }
+        
+    }
+	cout<<"--------------------------------------------------------------"<<endl;
+    cout << "EVAè§£ç çš„ç»“æœæ˜¯: "<< Mat(BitVector_local_maxmin_, true).t()<<endl;
+	
 
-		if (BitVector_local_maxmin_[i] <= local_maxmin_[i])
-		{
-			BitVector_local_maxmin_[i] = 0;
-		}
-		else
-		{
-			BitVector_local_maxmin_[i] = 1;
-		}
 
-	}
-	cout << "--------------------------------------------------------------" << endl;
-	cout << "EVA½âÂëµÄ½á¹ûÊÇ: " << Mat(BitVector_local_maxmin_, true).t() << endl;
-
-
-
-	//--------------------------------WARNING : ÏÂÃæÕâÒ»¶Î´úÂëÄÚº¬ BUG £¬Èç¹û½ö½öÊÇÏë²âÊÔÉÏÃæEVAËã·¨¾Í°ÑÕâÀï×¢ÊÍµô£¡-----------------------------//
+	//--------------------------------WARNING : ä¸‹é¢è¿™ä¸€æ®µä»£ç å†…å« BUG ï¼Œå¦‚æœä»…ä»…æ˜¯æƒ³æµ‹è¯•ä¸Šé¢EVAç®—æ³•å°±æŠŠè¿™é‡Œæ³¨é‡Šæ‰ï¼-----------------------------//
 	/*
 	///////////////////////////////////////////////////////////////////////////////
 	Mat msgDataVector;
@@ -533,123 +543,123 @@ sample_again: std::cout << "******sample_again   " << sample_point << "´Î" << en
 	msgDataVector.convertTo(msgDataVector, CV_8U);
 
 	Mat Header = (cv::Mat_<uchar>(1, 5) <<  1, 0, 1, 0, 1);
-	Mat result(msgDataVector.rows - Header.rows + 1, msgDataVector.cols-Header.cols + 1, CV_8U);//´´½¨Ä£°åÆ¥Åä·¨Êä³ö½á¹ûµÄ¾ØÕó
+	Mat result(msgDataVector.rows - Header.rows + 1, msgDataVector.cols-Header.cols + 1, CV_8U);//åˆ›å»ºæ¨¡æ¿åŒ¹é…æ³•è¾“å‡ºç»“æœçš„çŸ©é˜µ
 	matchTemplate(msgDataVector, Header, result, CV_TM_CCOEFF_NORMED);
 
 	threshold(result, result, 0.8, 1., CV_THRESH_TOZERO);
 
-	vector<int> HeaderStamp;//´æ·ÅÏûÏ¢Í·µÄÎ»ÖÃ
+	vector<int> HeaderStamp;//å­˜æ”¾æ¶ˆæ¯å¤´çš„ä½ç½®
 
 	while (true) {
-		double minval, maxval, threshold = 0.8;
-		cv::Point minloc, maxloc;
-		cv::minMaxLoc(result, &minval, &maxval, &minloc, &maxloc);
+        double minval, maxval, threshold = 0.8;
+        cv::Point minloc, maxloc;
+        cv::minMaxLoc(result, &minval, &maxval, &minloc, &maxloc);
 
-		if (maxval >= threshold) {
-			HeaderStamp.push_back(maxloc.x);
-			// ÂşË®Ìî³äÒÑ¾­Ê¶±ğµ½µÄÇøÓò
-			cv::floodFill(result, maxloc, cv::Scalar(0), 0, cv::Scalar(.1), cv::Scalar(1.));
-		} else {
-			break;
-		}
-	}
+        if (maxval >= threshold) {
+            HeaderStamp.push_back(maxloc.x);
+            // æ¼«æ°´å¡«å……å·²ç»è¯†åˆ«åˆ°çš„åŒºåŸŸ
+            cv::floodFill(result, maxloc, cv::Scalar(0), 0, cv::Scalar(.1), cv::Scalar(1.));
+        } else {
+            break;
+        }
+    }
 
 
 	int which_threshold = 4;
 
-	// ÔÚÁ½¸öÏûÏ¢Í·Ö®¼äÌáÈ¡ROIÇøÓò£¬¼´Î»IDĞÅÏ¢
-	int ptrHeaderStamp = 0;
-	cv::Mat LED_ID;
-	getROI:
-	try {
-		LED_ID=msgDataVector.colRange(HeaderStamp.at(ptrHeaderStamp) + Header.size().width,
-							HeaderStamp.at(ptrHeaderStamp + 1));
-		//colRange£¨start£¬end£©£¬°üº¬µÄ·¶Î§ÊÇ²»±£»¤startÁĞ£¬°üº¬endÁĞ
+	// åœ¨ä¸¤ä¸ªæ¶ˆæ¯å¤´ä¹‹é—´æå–ROIåŒºåŸŸï¼Œå³ä½IDä¿¡æ¯
+    int ptrHeaderStamp = 0;
+    cv::Mat LED_ID;
+    getROI:
+    try {
+        LED_ID=msgDataVector.colRange(HeaderStamp.at(ptrHeaderStamp) + Header.size().width,
+                            HeaderStamp.at(ptrHeaderStamp + 1));
+        //colRangeï¼ˆstartï¼Œendï¼‰ï¼ŒåŒ…å«çš„èŒƒå›´æ˜¯ä¸ä¿æŠ¤startåˆ—ï¼ŒåŒ…å«endåˆ—
+   
+    } catch ( cv::Exception& e ) {  // å¼‚å¸¸å¤„ç†
+        ptrHeaderStamp++;
+        // const char* err_msg = e.what();
+        // std::cout << "exception caught: " << err_msg << std::endl;
+        std::cout << "æ­£å¸¸ç°è±¡ï¼Œåˆ‡å‹¿æƒŠæ…Œ" << std::endl;
+        goto getROI;        
+    } catch ( std::out_of_range& e ) {  // å¼‚å¸¸å¤„ç†
+        std::cout << "æ­¤LEDå›¾åƒIDæ— æ³•è¯†åˆ«" << std::endl;
+        std::cout << "sample_point="<<sample_point << std::endl;
+        if (which_threshold==0)//é‡‡ç”¨ç¬¬ä¸€ç§æ–¹æ³•
+        {
+            sample_point++;
+            if (sample_point<=sample_interval)
+            {
+                goto sample_again;//é‡æ–°é‡‡æ ·
+            }
+            sample_point=-1;//ç”±äºä¸‹é¢å¾ªç¯å…ˆè¿›å…¥++ï¼Œè€Œé‡‡æ ·èŒƒå›´ä¸º0ï½9
+            which_threshold++;
+        }
+        if (which_threshold==1)//é‡‡ç”¨ç¬¬äºŒç§æ–¹æ³•
+        {
+            
+            sample_point++;
+            if (sample_point<=sample_interval)
+            {
+                goto sample_again;
+            }
+            sample_point=-1;
+            which_threshold++;
+        }
+        if (which_threshold==2)
+        {
+            sample_point++;
+            if (sample_point<=sample_interval)
+            {
+                goto sample_again;
+            }
+            sample_point=-1;
+            which_threshold++;
+        }
+        if (which_threshold==3)
+        {
+            sample_point++;
+            if (sample_point<=sample_interval)
+            {
+                goto sample_again;
+            }
+            sample_point=-1;
+            which_threshold++;
+        }
+        if (which_threshold==4)
+        {
+            sample_point++;
+            if (sample_point<=sample_interval)
+            {
+                goto sample_again;
+            }
+            sample_point=-1;
+            which_threshold++;
+        }
+    }
 
-	} catch ( cv::Exception& e ) {  // Òì³£´¦Àí
-		ptrHeaderStamp++;
-		// const char* err_msg = e.what();
-		// std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "Õı³£ÏÖÏó£¬ÇĞÎğ¾ª»Å" << std::endl;
-		goto getROI;
-	} catch ( std::out_of_range& e ) {  // Òì³£´¦Àí
-		std::cout << "´ËLEDÍ¼ÏñIDÎŞ·¨Ê¶±ğ" << std::endl;
-		std::cout << "sample_point="<<sample_point << std::endl;
-		if (which_threshold==0)//²ÉÓÃµÚÒ»ÖÖ·½·¨
-		{
-			sample_point++;
-			if (sample_point<=sample_interval)
-			{
-				goto sample_again;//ÖØĞÂ²ÉÑù
-			}
-			sample_point=-1;//ÓÉÓÚÏÂÃæÑ­»·ÏÈ½øÈë++£¬¶ø²ÉÑù·¶Î§Îª0¡«9
-			which_threshold++;
-		}
-		if (which_threshold==1)//²ÉÓÃµÚ¶şÖÖ·½·¨
-		{
+    std::cout << "LED_ID="<<LED_ID << std::endl;
+    // std::cout << "which_threshold="<<which_threshold << std::endl;
 
-			sample_point++;
-			if (sample_point<=sample_interval)
-			{
-				goto sample_again;
-			}
-			sample_point=-1;
-			which_threshold++;
-		}
-		if (which_threshold==2)
-		{
-			sample_point++;
-			if (sample_point<=sample_interval)
-			{
-				goto sample_again;
-			}
-			sample_point=-1;
-			which_threshold++;
-		}
-		if (which_threshold==3)
-		{
-			sample_point++;
-			if (sample_point<=sample_interval)
-			{
-				goto sample_again;
-			}
-			sample_point=-1;
-			which_threshold++;
-		}
-		if (which_threshold==4)
-		{
-			sample_point++;
-			if (sample_point<=sample_interval)
-			{
-				goto sample_again;
-			}
-			sample_point=-1;
-			which_threshold++;
-		}
-	}
-
-	std::cout << "LED_ID="<<LED_ID << std::endl;
-	// std::cout << "which_threshold="<<which_threshold << std::endl;
-
-	switch (which_threshold)
-	{
-		case 0:
-		std::cout << "×ÔÊÊÓ¦ãĞÖµÅĞ¶Ï³É¹¦" << std::endl;
-		break;
-		case 1:
-		std::cout << "¶àÏîÊ½ÅĞ¶Ï³É¹¦" << std::endl;
-		break;
-		case 2:
-		std::cout << "Ğ¡ÇøÓò×ÔÊÊÓ¦ãĞÖµÅĞ¶Ï³É¹¦" << std::endl;
-		break;
-		case 3:
-		std::cout << "¾Ö²¿×ÔÊÊÓ¦ãĞÖµÅĞ¶Ï³É¹¦" << std::endl;
-		break;
-		case 4:
-		std::cout << "EAãĞÖµÅĞ¶Ï³É¹¦" << std::endl;
-		break;
-	}
-
+    switch (which_threshold)
+    {
+        case 0:
+        std::cout << "è‡ªé€‚åº”é˜ˆå€¼åˆ¤æ–­æˆåŠŸ" << std::endl;
+        break;
+        case 1:
+        std::cout << "å¤šé¡¹å¼åˆ¤æ–­æˆåŠŸ" << std::endl;
+        break;
+        case 2:
+        std::cout << "å°åŒºåŸŸè‡ªé€‚åº”é˜ˆå€¼åˆ¤æ–­æˆåŠŸ" << std::endl;
+        break;
+        case 3:
+        std::cout << "å±€éƒ¨è‡ªé€‚åº”é˜ˆå€¼åˆ¤æ–­æˆåŠŸ" << std::endl;
+        break;
+        case 4:
+        std::cout << "EAé˜ˆå€¼åˆ¤æ–­æˆåŠŸ" << std::endl;
+        break;
+    }
+	
 	*/
 
 	waitKey();
@@ -663,89 +673,89 @@ sample_again: std::cout << "******sample_again   " << sample_point << "´Î" << en
 //------------[Funtion to calculate the threshold----------//
 double getThreshVal_Otsu_8u(const Mat& _src)
 {
-	Size size = _src.size();
-	if (_src.isContinuous())
-	{
-		size.width *= size.height;
-		size.height = 1;
-	}
-	const int N = 256;
-	int i, j, h[N] = { 0 };
-	for (i = 0; i < size.height; i++)
-	{
-		const uchar* src = _src.data + _src.step * i;
-		for (j = 0; j <= size.width - 4; j += 4)
-		{
-			int v0 = src[j], v1 = src[j + 1];
-			h[v0]++; h[v1]++;
-			v0 = src[j + 2]; v1 = src[j + 3];
-			h[v0]++; h[v1]++;
-		}
-		for (; j < size.width; j++)
-			h[src[j]]++;
-	}
+    Size size = _src.size();
+    if (_src.isContinuous())
+    {
+        size.width *= size.height;
+        size.height = 1;
+    }
+    const int N = 256;
+    int i, j, h[N] = { 0 };
+    for (i = 0; i < size.height; i++)
+    {
+        const uchar* src = _src.data + _src.step*i;
+        for (j = 0; j <= size.width - 4; j += 4)
+        {
+            int v0 = src[j], v1 = src[j + 1];
+            h[v0]++; h[v1]++;
+            v0 = src[j + 2]; v1 = src[j + 3];
+            h[v0]++; h[v1]++;
+        }
+        for (; j < size.width; j++)
+            h[src[j]]++;
+    }
 
-	double mu = 0, scale = 1. / (size.width * size.height);
-	for (i = 0; i < N; i++)
-		mu += i * h[i];
+    double mu = 0, scale = 1. / (size.width*size.height);
+    for (i = 0; i < N; i++)
+        mu += i*h[i];
 
-	mu *= scale;
-	double mu1 = 0, q1 = 0;
-	double max_sigma = 0, max_val = 0;
+    mu *= scale;
+    double mu1 = 0, q1 = 0;
+    double max_sigma = 0, max_val = 0;
 
-	for (i = 0; i < N; i++)
-	{
-		double p_i, q2, mu2, sigma;
+    for (i = 0; i < N; i++)
+    {
+        double p_i, q2, mu2, sigma;
 
-		p_i = h[i] * scale;
-		mu1 *= q1;
-		q1 += p_i;
-		q2 = 1. - q1;
+        p_i = h[i] * scale;
+        mu1 *= q1;
+        q1 += p_i;
+        q2 = 1. - q1;
 
-		if (std::min(q1, q2) < FLT_EPSILON || std::max(q1, q2) > 1. - FLT_EPSILON)
-			continue;
+        if (std::min(q1, q2) < FLT_EPSILON || std::max(q1, q2) > 1. - FLT_EPSILON)
+            continue;
 
-		mu1 = (mu1 + i * p_i) / q1;
-		mu2 = (mu - q1 * mu1) / q2;
-		sigma = q1 * q2 * (mu1 - mu2) * (mu1 - mu2);
-		if (sigma > max_sigma)
-		{
-			max_sigma = sigma;
-			max_val = i;
-		}
-	}
+        mu1 = (mu1 + i*p_i) / q1;
+        mu2 = (mu - q1*mu1) / q2;
+        sigma = q1*q2*(mu1 - mu2)*(mu1 - mu2);
+        if (sigma > max_sigma)
+        {
+            max_sigma = sigma;
+            max_val = i;
+        }
+    }
 
-	return max_val;
+    return max_val;
 }
 
 /*
 void bwareaopen(Mat &data, int n)
 {
-	Mat labels, stats, centroids;
-	connectedComponentsWithStats(data, labels, stats, centroids, 8, CV_16U);
-	int regions_count = stats.rows - 1;
-	int regions_size, regions_x1, regions_y1, regions_x2, regions_y2;
+    Mat labels, stats, centroids;
+    connectedComponentsWithStats(data, labels, stats, centroids, 8, CV_16U);
+    int regions_count = stats.rows - 1;
+    int regions_size, regions_x1, regions_y1, regions_x2, regions_y2;
 
-	for (int i = 1;i <= regions_count;i++)
-	{
-		regions_size = stats.ptr<int>(i)[4];
-		if (regions_size < n)
-		{
-			regions_x1 = stats.ptr<int>(i)[0];
-			regions_y1 = stats.ptr<int>(i)[1];
-			regions_x2 = regions_x1 + stats.ptr<int>(i)[2];
-			regions_y2 = regions_y1 + stats.ptr<int>(i)[3];
+    for (int i = 1;i <= regions_count;i++)
+    {
+        regions_size = stats.ptr<int>(i)[4];
+        if (regions_size < n)
+        {
+            regions_x1 = stats.ptr<int>(i)[0];
+            regions_y1 = stats.ptr<int>(i)[1];
+            regions_x2 = regions_x1 + stats.ptr<int>(i)[2];
+            regions_y2 = regions_y1 + stats.ptr<int>(i)[3];
 
-			for (int j = regions_y1;j<regions_y2;j++)
-			{
-				for (int k = regions_x1;k<regions_x2;k++)
-				{
-					if (labels.ptr<ushort>(j)[k] == i)
-						data.ptr<uchar>(j)[k] = 0;
-				}
-			}
-		}
-	}
+            for (int j = regions_y1;j<regions_y2;j++)
+            {
+                for (int k = regions_x1;k<regions_x2;k++)
+                {
+                    if (labels.ptr<ushort>(j)[k] == i)
+                        data.ptr<uchar>(j)[k] = 0;
+                }
+            }
+        }
+    }
 }
 
 */
@@ -754,66 +764,66 @@ void bwareaopen(Mat &data, int n)
 void ls_LED(const Mat& _img, int& X_min, int& X_max, int& Y_min, int& Y_max, Mat& imgNext, int ii)
 {
 	/*
-	º¯ÊıËµÃ÷:
-	[¹¦ÄÜ]:ÓÃÓÚ»ñÈ¡Í¼ÏñÀïÃæµÄLED_ROI,ÇÒ´ïµ½½Ï¸ßµÄÂ³°ôĞÔ
+	å‡½æ•°è¯´æ˜:
+	[åŠŸèƒ½]:ç”¨äºè·å–å›¾åƒé‡Œé¢çš„LED_ROI,ä¸”è¾¾åˆ°è¾ƒé«˜çš„é²æ£’æ€§
 
-	[²ÎÊıËµÃ÷]:
-	²ÎÊı1: ÊäÈëµÄÍ¼Æ¬
-	²ÎÊı2: ROIµÄ×ó±ß½ç
-	²ÎÊı3: ROIµÄÓÒ±ß½ç
-	²ÎÊı4: ROIµÄÉÏ±ß½ç
-	²ÎÊı5: ROIµÄÏÂ±ß½ç
-	²ÎÊı6: ½ØÈ¡µ½µÄROI
+	[å‚æ•°è¯´æ˜]:
+	å‚æ•°1: è¾“å…¥çš„å›¾ç‰‡
+	å‚æ•°2: ROIçš„å·¦è¾¹ç•Œ
+	å‚æ•°3: ROIçš„å³è¾¹ç•Œ
+	å‚æ•°4: ROIçš„ä¸Šè¾¹ç•Œ
+	å‚æ•°5: ROIçš„ä¸‹è¾¹ç•Œ
+	å‚æ•°6: æˆªå–åˆ°çš„ROI
 	*/
 
-	Mat temp1 = _img.clone();
+    Mat temp1= _img.clone();
 
-	// ÇóxminÓëxmax
-	int row1 = temp1.rows;                               // ĞĞÊı
-	int col1 = temp1.cols;                               // ÁĞ
-	int j = 0;                                           // ×¢ÒâÊÇ´Ó0¿ªÊ¼
-	while (j < col1)
-	{
-		double sum1 = 0.0;
-		for (int i = 0; i < row1; i++)      				 // ×¢ÒâÃ»ÓĞµÈÓÚºÅ
-		{
-			uchar* data1 = temp1.ptr<uchar>(i);          // ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			sum1 = data1[j] + sum1;
-		}                                                // ½«µÚjÁĞµÄÃ¿Ò»ĞĞ¼ÓÍê
-		if (sum1 > -0.000001 && sum1 < 0.000001)            // doubleÀàĞÍ£¬²»ÄÜĞ´==0,Òò´ËÂú×ãÕâ¸öÌõ¼ş¾Í¿ÉÒÔÊÓ×÷µÈÓÚsum=0
-		{
-			j++;                                         //Èç¹ûÕûÒ»ÁĞ¶¼Ã»ÓĞÏñËØÖµ,ÄÇÃ´±ØÈ»ÊÇÃ»ÓĞ°üÀ¨LEDµÄROIµÄ
-		}
-		else
-		{
-			break;										 // Ìø³öÕâ¸öwhileÑ­»·
-		}
+    // æ±‚xminä¸xmax
+    int row1 = temp1.rows;                               // è¡Œæ•°
+    int col1 = temp1.cols;                               // åˆ—
+    int j = 0;                                           // æ³¨æ„æ˜¯ä»0å¼€å§‹
+    while (j < col1)                                    
+    {
+        double sum1 = 0.0;
+        for (int i = 0;i < row1;i++)      				 // æ³¨æ„æ²¡æœ‰ç­‰äºå·
+        {
+            uchar* data1 = temp1.ptr<uchar>(i);          // ptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            sum1 = data1[j] + sum1;
+        }                                                // å°†ç¬¬jåˆ—çš„æ¯ä¸€è¡ŒåŠ å®Œ
+        if (sum1>-0.000001 && sum1< 0.000001)            // doubleç±»å‹ï¼Œä¸èƒ½å†™==0,å› æ­¤æ»¡è¶³è¿™ä¸ªæ¡ä»¶å°±å¯ä»¥è§†ä½œç­‰äºsum=0
+        {
+            j++;                                         //å¦‚æœæ•´ä¸€åˆ—éƒ½æ²¡æœ‰åƒç´ å€¼,é‚£ä¹ˆå¿…ç„¶æ˜¯æ²¡æœ‰åŒ…æ‹¬LEDçš„ROIçš„
+        }
+        else
+        {
+            break;										 // è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
 
-	}
-	X_min = j;                                           //X_min±íÊ¾Í¼ÏñÀïÃæ×îÔç³öÏÖLED²¿·ÖµÄÁĞÊı                                            
+    }
+    X_min = j;                                           //X_minè¡¨ç¤ºå›¾åƒé‡Œé¢æœ€æ—©å‡ºç°LEDéƒ¨åˆ†çš„åˆ—æ•°                                            
 
-	while (j < col1)                                     // jµÄ³õÖµÎªX_min
-	{
-		double sum1 = 0.0;
-		for (int i = 0; i < row1; i++)
-		{
-			uchar* data1 = temp1.ptr<uchar>(i);          // ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			sum1 = data1[j] + sum1;
-		}                                                // ½«µÚjÁĞµÄÃ¿Ò»ĞĞ¼ÓÍê
-		if (sum1 != 0)
-		{
-			j++;
-		}
-		else
-		{
-			break;										// Ìø³öÕâ¸öwhileÑ­»·
-		}
-	}
-	X_max = j;                                          //ÕâÀïX_max±íÊ¾Õâ¸öLEDµÄROI×îÓÒ±ßµÄ±ß½ç
+    while (j < col1)                                     // jçš„åˆå€¼ä¸ºX_min
+    {
+        double sum1 = 0.0;
+        for (int i = 0;i < row1;i++)
+        {
+            uchar* data1 = temp1.ptr<uchar>(i);          // ptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            sum1 = data1[j] + sum1;
+        }                                                // å°†ç¬¬jåˆ—çš„æ¯ä¸€è¡ŒåŠ å®Œ
+        if (sum1 != 0)
+        {
+            j++;
+        }
+        else
+        {
+            break;										// è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
+    }
+    X_max = j;                                          //è¿™é‡ŒX_maxè¡¨ç¤ºè¿™ä¸ªLEDçš„ROIæœ€å³è¾¹çš„è¾¹ç•Œ
 
-	// ½øĞĞÇĞ¸î
-	Mat imgCut = temp1(Rect(X_min, 0, X_max - X_min, row1));  //ÏÈ°Ñ°üº¬Õâ¸öROIµÄÕûÒ»ÌõÈ«²¿È¡³öÀ´ÏÈ
-
+    // è¿›è¡Œåˆ‡å‰²
+    Mat imgCut = temp1(Rect(X_min, 0, X_max - X_min, row1));  //å…ˆæŠŠåŒ…å«è¿™ä¸ªROIçš„æ•´ä¸€æ¡å…¨éƒ¨å–å‡ºæ¥å…ˆ
+	
 	/*
 	stringstream temp_index;
 	temp_index << ii+10;
@@ -821,120 +831,120 @@ void ls_LED(const Mat& _img, int& X_min, int& X_max, int& Y_min, int& Y_max, Mat
 	imshow(s2, imgCut);
 	*/
 
-	Mat temp = imgCut.clone();
-	//-------------------ÒÔÉÏ²½ÖèÎÒÃÇÖ»ÊÇ»ñÈ¡ÁËROIµÄ×óÓÒ±ß½ç,ÏÂÃæ¿ªÊ¼»ñÈ¡ÉÏÏÂ±ß½ç--------------//
+    Mat temp = imgCut.clone();
+	//-------------------ä»¥ä¸Šæ­¥éª¤æˆ‘ä»¬åªæ˜¯è·å–äº†ROIçš„å·¦å³è¾¹ç•Œ,ä¸‹é¢å¼€å§‹è·å–ä¸Šä¸‹è¾¹ç•Œ--------------//
 
-	// ÇóyminÓëymax
-	int row = temp.rows;							   // ĞĞÊı
-	int col = temp.cols;							   // ÁĞ
-	int i = 0;
-	while (i < row)                                    // iµÄ³õÖµÎª1
-	{
-		double sum = 0.0;
-		uchar* data = temp.ptr<uchar>(i);
-		for (j = 0; j < col; j++)                        // ¶ÔÃ¿Ò»ĞĞÖĞµÄÃ¿Ò»ÁĞÏñËØ½øĞĞÏà¼Ó£¬ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-		{
-			sum = data[j] + sum;
-		}                                              // ×îÖÕ»ñµÃµÚiĞĞµÄÁĞºÍ
-		if (sum > -0.000001 && sum < 0.000001)
-		{
-			i++;                                       //Èç¹ûÕûÒ»ĞĞµÄÏñËØºÍ¶¼ÊÇ0,ÄÇÕâÒ»ĞĞ±Ø¶¨ÊÇÃ»ÓĞROIÇøÓòµÄ
-		}
-		else
-		{
-			Y_min = i;                                 //·ñÔò,ÄÇÃ´ËµÃ÷ÕâÒ»ĞĞ¾ÍÊÇÎÒÃÇÕÒµ½µÄROIÉÏ±ß½ç
-			break;								       // Ìø³öÕâ¸öwhileÑ­»·
-		}
-	}
-	Y_min = i;
+    // æ±‚yminä¸ymax
+    int row = temp.rows;							   // è¡Œæ•°
+    int col = temp.cols;							   // åˆ—
+    int i = 0;
+    while (i < row)                                    // içš„åˆå€¼ä¸º1
+    {
+        double sum = 0.0;
+        uchar* data = temp.ptr<uchar>(i);
+        for (j = 0;j < col;j++)                        // å¯¹æ¯ä¸€è¡Œä¸­çš„æ¯ä¸€åˆ—åƒç´ è¿›è¡Œç›¸åŠ ï¼Œptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+        {
+            sum = data[j] + sum;
+        }                                              // æœ€ç»ˆè·å¾—ç¬¬iè¡Œçš„åˆ—å’Œ
+        if (sum>-0.000001 && sum < 0.000001)
+        {
+            i++;                                       //å¦‚æœæ•´ä¸€è¡Œçš„åƒç´ å’Œéƒ½æ˜¯0,é‚£è¿™ä¸€è¡Œå¿…å®šæ˜¯æ²¡æœ‰ROIåŒºåŸŸçš„
+        }
+        else
+        {
+            Y_min = i;                                 //å¦åˆ™,é‚£ä¹ˆè¯´æ˜è¿™ä¸€è¡Œå°±æ˜¯æˆ‘ä»¬æ‰¾åˆ°çš„ROIä¸Šè¾¹ç•Œ
+            break;								       // è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
+    }
+    Y_min = i;
 
-	while (i <= row - 16)                              // iµÄ³õÖµÎªY_min   #####-16
-	{
-		double sum = 0.0;
-		uchar* data = temp.ptr<uchar>(i);
-		for (j = 0; j < col; j++)                        // ¶ÔÃ¿Ò»ĞĞÖĞµÄÃ¿Ò»ÁĞÏñËØ½øĞĞÏà¼Ó£¬ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-		{
-			sum = data[j] + sum;
-		}											   // ×îÖÕ»ñµÃµÚiĞĞµÄÁĞºÍ
-		if (sum != 0)
-		{
-			i++;									   //sum!=0ËµÃ÷»¹Ã»ÓĞµ½ROIµÄÏÂ±ß½ç
-		}
-		else
-		{
-			//--------------------ÏÂÃæµÄ²½ÖèÓÃÓÚ·ÀÖ¹ÓĞÃ»ÓĞÌáÇ°½áÊø---------------------//
-			/*ÒòÎª¶ÔÓÚ·¢Éä0ĞÅºÅµÄÄ³Ò»ĞĞ¶øÑÔ,¾­¹ı¶şÖµ´¦ÀíÖ®ºó,È¥¼ì²âËüÕâÒ»ĞĞµÄÏñËØ×ÜºÍÒ²ÊÇ0
-			µ¥Õâ²¢²»ÒâÎ¶×ÅLEDµÄROI¾Íµ½´Ë½áÊøÁË,ÎÒÃÇ»¹ĞèÒªÍùºó¶à¼ì²â¼¸ĞĞ¿´¿´Ã¿ĞĞ»¹ÊÇ²»ÊÇ0
+    while (i <= row - 16)                              // içš„åˆå€¼ä¸ºY_min   #####-16
+    {
+        double sum = 0.0;
+        uchar* data = temp.ptr<uchar>(i);
+        for (j = 0;j < col;j++)                        // å¯¹æ¯ä¸€è¡Œä¸­çš„æ¯ä¸€åˆ—åƒç´ è¿›è¡Œç›¸åŠ ï¼Œptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+        {
+            sum = data[j] + sum;
+        }											   // æœ€ç»ˆè·å¾—ç¬¬iè¡Œçš„åˆ—å’Œ
+        if (sum != 0)
+        {
+            i++;									   //sum!=0è¯´æ˜è¿˜æ²¡æœ‰åˆ°ROIçš„ä¸‹è¾¹ç•Œ
+        }
+        else
+        {
+			//--------------------ä¸‹é¢çš„æ­¥éª¤ç”¨äºé˜²æ­¢æœ‰æ²¡æœ‰æå‰ç»“æŸ---------------------//
+			/*å› ä¸ºå¯¹äºå‘å°„0ä¿¡å·çš„æŸä¸€è¡Œè€Œè¨€,ç»è¿‡äºŒå€¼å¤„ç†ä¹‹å,å»æ£€æµ‹å®ƒè¿™ä¸€è¡Œçš„åƒç´ æ€»å’Œä¹Ÿæ˜¯0
+			å•è¿™å¹¶ä¸æ„å‘³ç€LEDçš„ROIå°±åˆ°æ­¤ç»“æŸäº†,æˆ‘ä»¬è¿˜éœ€è¦å¾€åå¤šæ£€æµ‹å‡ è¡Œçœ‹çœ‹æ¯è¡Œè¿˜æ˜¯ä¸æ˜¯0
 			*/
 
-			double sum6 = 0.0;
-			int iiii = i + 16;
-			uchar* data = temp.ptr<uchar>(iiii);
-			for (j = 0; j < col; j++)					   // ¶ÔÃ¿Ò»ĞĞÖĞµÄÃ¿Ò»ÁĞÏñËØ½øĞĞÏà¼Ó£¬ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			{
-				sum6 = data[j] + sum6;
-			}										   // ×îÖÕ»ñµÃµÚiĞĞÖ®ºó20ĞĞ£¬¼´iiiiµÄÁĞºÍ
-			if (sum6 > -0.000001 && sum6 < 0.000001)   // Èç¹ûÈÔÈ»Îª0£¬²ÅÌø³ö
-			{
-				Y_max = i;
-				goto logo;							   // Ìø³öÕâ¸öwhileÑ­»·
-			}
-			else// ·ñÔò¼ÌĞøÖ´ĞĞ
-			{
-				i++;
-			}
-		}
-	}
-logo:
-	Y_max = i;
+            double sum6 = 0.0;
+            int iiii = i + 16;
+            uchar* data = temp.ptr<uchar>(iiii);
+            for (j = 0;j < col;j++)					   // å¯¹æ¯ä¸€è¡Œä¸­çš„æ¯ä¸€åˆ—åƒç´ è¿›è¡Œç›¸åŠ ï¼Œptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            {
+                sum6 = data[j] + sum6;
+            }										   // æœ€ç»ˆè·å¾—ç¬¬iè¡Œä¹‹å20è¡Œï¼Œå³iiiiçš„åˆ—å’Œ
+            if (sum6 > -0.000001 && sum6 < 0.000001)   // å¦‚æœä»ç„¶ä¸º0ï¼Œæ‰è·³å‡º
+            {
+                Y_max = i;
+                goto logo;							   // è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+            }
+            else// å¦åˆ™ç»§ç»­æ‰§è¡Œ
+            {
+                i++;
+            }
+        }
+    }
+    logo:
+    Y_max = i;
 
-	// ½øĞĞÇĞ¸î
-	Mat imgCut1 = temp(Rect(0, Y_min, col, Y_max - Y_min));
-	imgNext = imgCut1.clone();						  // cloneº¯Êı´´½¨ĞÂµÄÍ¼Æ¬
+    // è¿›è¡Œåˆ‡å‰²
+    Mat imgCut1 = temp(Rect(0, Y_min, col, Y_max - Y_min));
+    imgNext = imgCut1.clone();						  // cloneå‡½æ•°åˆ›å»ºæ–°çš„å›¾ç‰‡
 	/*
-	//---------------¶ÔÓÚCutÖ®ºóµÄROI½øĞĞ×îºóÒ»´Î¼ì²é-----------------//
+	//---------------å¯¹äºCutä¹‹åçš„ROIè¿›è¡Œæœ€åä¸€æ¬¡æ£€æŸ¥-----------------//
 	int j_last= 0;
 	int row_last = imgCut1.rows;
 	int col_last = imgCut1.cols;
 	while(j_last < col_last)
 	{
-		double sum_last = 0.0;    //¶¨ÒåÁĞÏñËØ×ÜºÍÎª0
-		for (int i_last = 0;i_last < row_last; i_last ++)      				 // ×¢ÒâÃ»ÓĞµÈÓÚºÅ
-		{
-			uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			sum_last = data2[j_last] + sum_last;
-		}                                                // ½«µÚjÁĞµÄÃ¿Ò»ĞĞ¼ÓÍê
-		if (sum_last>-0.000001 && sum_last< 0.000001)            // doubleÀàĞÍ£¬²»ÄÜĞ´==0,Òò´ËÂú×ãÕâ¸öÌõ¼ş¾Í¿ÉÒÔÊÓ×÷µÈÓÚsum=0
-		{
-			j_last++;                                         //Èç¹ûÕûÒ»ÁĞ¶¼Ã»ÓĞÏñËØÖµ,ÄÇÃ´±ØÈ»ÊÇÃ»ÓĞ°üÀ¨LEDµÄROIµÄ
-		}
-		else
-		{
-			break;										 // Ìø³öÕâ¸öwhileÑ­»·
-		}
+		double sum_last = 0.0;    //å®šä¹‰åˆ—åƒç´ æ€»å’Œä¸º0
+		for (int i_last = 0;i_last < row_last; i_last ++)      				 // æ³¨æ„æ²¡æœ‰ç­‰äºå·
+        {
+            uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            sum_last = data2[j_last] + sum_last;
+        }                                                // å°†ç¬¬jåˆ—çš„æ¯ä¸€è¡ŒåŠ å®Œ
+        if (sum_last>-0.000001 && sum_last< 0.000001)            // doubleç±»å‹ï¼Œä¸èƒ½å†™==0,å› æ­¤æ»¡è¶³è¿™ä¸ªæ¡ä»¶å°±å¯ä»¥è§†ä½œç­‰äºsum=0
+        {
+            j_last++;                                         //å¦‚æœæ•´ä¸€åˆ—éƒ½æ²¡æœ‰åƒç´ å€¼,é‚£ä¹ˆå¿…ç„¶æ˜¯æ²¡æœ‰åŒ…æ‹¬LEDçš„ROIçš„
+        }
+        else
+        {
+            break;										 // è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
 	}
 	X_min = j_last;
 
-	while (j_last < col_last)                                     // jµÄ³õÖµÎªX_min
-	{
-		double sum_last = 0.0;
-		for (int i_last = 0;i_last < row_last;i_last++)
-		{
-			uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			sum_last = data2[j_last] + sum_last;
-		}                                                // ½«µÚjÁĞµÄÃ¿Ò»ĞĞ¼ÓÍê
-		if (sum_last != 0)
-		{
-			j_last++;
-		}
-		else
-		{
-			break;										// Ìø³öÕâ¸öwhileÑ­»·
-		}
-	}
-	X_max = j_last;                                          //ÕâÀïX_max±íÊ¾Õâ¸öLEDµÄROI×îÓÒ±ßµÄ±ß½ç
+	while (j_last < col_last)                                     // jçš„åˆå€¼ä¸ºX_min
+    {
+        double sum_last = 0.0;
+        for (int i_last = 0;i_last < row_last;i_last++)
+        {
+            uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            sum_last = data2[j_last] + sum_last;
+        }                                                // å°†ç¬¬jåˆ—çš„æ¯ä¸€è¡ŒåŠ å®Œ
+        if (sum_last != 0)
+        {
+            j_last++;
+        }
+        else
+        {
+            break;										// è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
+    }
+    X_max = j_last;                                          //è¿™é‡ŒX_maxè¡¨ç¤ºè¿™ä¸ªLEDçš„ROIæœ€å³è¾¹çš„è¾¹ç•Œ
 
-	Mat imgCut2 = imgCut1(Rect(X_min, 0, X_max - X_min, row_last));
+	Mat imgCut2 = imgCut1(Rect(X_min, 0, X_max - X_min, row_last)); 
 	imgNext = imgCut2.clone();
 	*/
 }
@@ -949,46 +959,45 @@ Mat thin_image(Mat& imgCut1, Mat& thin_img_cut)
 	int col_last = imgCut1.cols;
 	while(j_last < col_last)
 	{
-		double sum_last = 0.0;    //¶¨ÒåÁĞÏñËØ×ÜºÍÎª0
-		for (int i_last = 0;i_last < row_last; i_last ++)      				 // ×¢ÒâÃ»ÓĞµÈÓÚºÅ
-		{
-			uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			sum_last = data2[j_last] + sum_last;
-			cout<<"Ò»ÁĞµÄÏñËØºÍ:"<<sum_last<<endl;
-		}                                                // ½«µÚjÁĞµÄÃ¿Ò»ĞĞ¼ÓÍê
-		if (sum_last < 800)            // doubleÀàĞÍ£¬²»ÄÜĞ´==0,Òò´ËÂú×ãÕâ¸öÌõ¼ş¾Í¿ÉÒÔÊÓ×÷µÈÓÚsum=0
-		{
-			j_last++;                                         //Èç¹ûÕûÒ»ÁĞ¶¼Ã»ÓĞÏñËØÖµ,ÄÇÃ´±ØÈ»ÊÇÃ»ÓĞ°üÀ¨LEDµÄROIµÄ
-		}
-		else
-		{
-			break;										 // Ìø³öÕâ¸öwhileÑ­»·
-		}
+		double sum_last = 0.0;    //å®šä¹‰åˆ—åƒç´ æ€»å’Œä¸º0
+		for (int i_last = 0;i_last < row_last; i_last ++)      				 // æ³¨æ„æ²¡æœ‰ç­‰äºå·
+        {
+            uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            sum_last = data2[j_last] + sum_last;
+			cout<<"ä¸€åˆ—çš„åƒç´ å’Œ:"<<sum_last<<endl;
+        }                                                // å°†ç¬¬jåˆ—çš„æ¯ä¸€è¡ŒåŠ å®Œ
+        if (sum_last < 800)            // doubleç±»å‹ï¼Œä¸èƒ½å†™==0,å› æ­¤æ»¡è¶³è¿™ä¸ªæ¡ä»¶å°±å¯ä»¥è§†ä½œç­‰äºsum=0
+        {
+            j_last++;                                         //å¦‚æœæ•´ä¸€åˆ—éƒ½æ²¡æœ‰åƒç´ å€¼,é‚£ä¹ˆå¿…ç„¶æ˜¯æ²¡æœ‰åŒ…æ‹¬LEDçš„ROIçš„
+        }
+        else
+        {
+            break;										 // è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
 	}
 	X_min = j_last;
 
-	while (j_last < col_last)                                     // jµÄ³õÖµÎªX_min
-	{
-		double sum_last = 0.0;
-		for (int i_last = 0;i_last < row_last;i_last++)
-		{
-			uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]·ÃÎÊµÚiĞĞµÚjÁĞµÄÏñËØ
-			sum_last = data2[j_last] + sum_last;
-		}                                                // ½«µÚjÁĞµÄÃ¿Ò»ĞĞ¼ÓÍê
-		if (sum_last != 0)
-		{
-			j_last++;
-		}
-		else
-		{
-			break;										// Ìø³öÕâ¸öwhileÑ­»·
-		}
-	}
-	X_max = j_last;                                          //ÕâÀïX_max±íÊ¾Õâ¸öLEDµÄROI×îÓÒ±ßµÄ±ß½ç
+	while (j_last < col_last)                                     // jçš„åˆå€¼ä¸ºX_min
+    {
+        double sum_last = 0.0;
+        for (int i_last = 0;i_last < row_last;i_last++)
+        {
+            uchar* data2 = imgCut1.ptr<uchar>(i_last);          // ptr<uchar>(i)[j]è®¿é—®ç¬¬iè¡Œç¬¬jåˆ—çš„åƒç´ 
+            sum_last = data2[j_last] + sum_last;
+        }                                                // å°†ç¬¬jåˆ—çš„æ¯ä¸€è¡ŒåŠ å®Œ
+        if (sum_last != 0)
+        {
+            j_last++;
+        }
+        else
+        {
+            break;										// è·³å‡ºè¿™ä¸ªwhileå¾ªç¯
+        }
+    }
+    X_max = j_last;                                          //è¿™é‡ŒX_maxè¡¨ç¤ºè¿™ä¸ªLEDçš„ROIæœ€å³è¾¹çš„è¾¹ç•Œ
 
-	Mat imgCut2 = imgCut1(Rect(X_min, 0, X_max - X_min, row_last));
+	Mat imgCut2 = imgCut1(Rect(X_min, 0, X_max - X_min, row_last)); 
 	thin_img_cut = imgCut2.clone();
 	return thin_img_cut;
 }
- 
 */
