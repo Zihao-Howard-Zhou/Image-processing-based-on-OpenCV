@@ -3,7 +3,7 @@
 ## Project Remembers
 ZiHao Zhou:  School of Information Engineering, South China University of Technology, Guangzhou, Guangdong, China 
              
-JunHua Chen, Chen Yang, ZiQiang Qin
+JunYe Chen, Chen Yang, ZiQiang Qin
 
 ## Research Focus
 This code repository contains image processing related codes based on OpenCV (C++)
